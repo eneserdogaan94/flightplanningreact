@@ -16,8 +16,10 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(credentials.username, credentials.password);
-    navigate("/home");
+    const success = await login(credentials.username, credentials.password);
+    if (success) {
+      navigate("/home"); // Login başarılıysa anasayfaya yönlendir
+    }
   };
 
   return (

@@ -5,7 +5,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
 
   const login = async (username, password) => {
     try {
@@ -13,18 +13,21 @@ export const AuthProvider = ({ children }) => {
       setUser(username);
       setToken(response.data.token);
       localStorage.setItem("token", response.data.token);
+      return true; // Login başarılıysa true döner
     } catch (error) {
       if (error.response) {
         alert(`Login failed: ${error.response.data}`);
       } else {
         console.error("Login failed", error.message);
       }
+      return false; // Login başarısızsa false döner
     }
   };
 
   const signup = async (userData) => {
     try {
       await axios.post("/api/auth/signup", userData);
+      alert("Signup successful!");
     } catch (error) {
       console.error("Signup failed", error);
     }
@@ -34,6 +37,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setToken(null);
     localStorage.removeItem("token");
+    alert("You have been logged out.");
   };
 
   return (
