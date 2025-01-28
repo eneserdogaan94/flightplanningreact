@@ -16,9 +16,9 @@ export const AuthProvider = ({ children }) => {
       return true; // Login başarılıysa true döner
     } catch (error) {
       if (error.response) {
-        alert(`Login failed: ${error.response.data}`);
+        alert(`Login failed`);
       } else {
-        console.error("Login failed", error.message);
+        console.error("Login failed");
       }
       return false; // Login başarısızsa false döner
     }
