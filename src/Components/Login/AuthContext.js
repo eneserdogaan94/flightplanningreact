@@ -26,10 +26,14 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (userData) => {
     try {
-      await axios.post("/api/auth/signup", userData);
-      alert("Signup successful!");
+      const response = await axios.post("/api/auth/signup", userData);
+      if (response.status === 200 || response.status === 201) {
+        return true; // Başarılı
+      }
+      return false;
     } catch (error) {
-      console.error("Signup failed", error);
+      console.error("Signup failed:", error);
+      return false; // Başarısız
     }
   };
 
