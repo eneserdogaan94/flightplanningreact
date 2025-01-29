@@ -32,16 +32,22 @@ const Login = () => {
     if (!credentials.username) newErrors.username = "Username is required.";
     if (!credentials.password) newErrors.password = "Password is required.";
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Hata yoksa true döner
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-  
+
     const success = await login(credentials.username, credentials.password);
     if (success) {
-      navigate("/home"); // 🛑 Başarısız girişlerde de çalışıyor olabilir!
+      // 🛑 Kullanıcı rolüne göre yönlendirme ekliyoruz!
+      const role = JSON.parse(localStorage.getItem("user")).role;
+      if (role === "ADMIN") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/home");
+      }
     } else {
       setGeneralError("Login failed. Please check your credentials.");
     }
@@ -75,9 +81,7 @@ const Login = () => {
             id="username"
             label="Username"
             name="username"
-            autoComplete="username"
-            value={credentials.username}  
-            autoFocus
+            value={credentials.username || ""}
             onChange={(e) => handleChange(e.target.name, e.target.value)}
             error={!!errors.username}
             helperText={errors.username}
@@ -89,8 +93,7 @@ const Login = () => {
             label="Password"
             type="password"
             id="password"
-            value={credentials.password}  
-            autoComplete="current-password"
+            value={credentials.password || ""}
             onChange={(e) => handleChange(e.target.name, e.target.value)}
             error={!!errors.password}
             helperText={errors.password}

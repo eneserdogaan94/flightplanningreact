@@ -15,7 +15,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <h1>Welcome, {user}!</h1>
+      <h1>Welcome, {user?.username}!</h1>
       <Button text="Logout" onClick={handleLogout} />
     </div>
   );
