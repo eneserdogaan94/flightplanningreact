@@ -1,12 +1,12 @@
-export const Button = ({ label, onClick, type = "button", ...props }) => {
-    return (
-      <button
-        type={type}
-        onClick={onClick}
-        {...props}
-        className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-      >
-        {label}
-      </button>
-    );
-  };
+import React from "react";
+import MuiButton from "@mui/material/Button";
+
+const Button = ({ text, onClick, ...props }) => {
+  return (
+    <MuiButton onClick={onClick} fullWidth variant="contained" {...props}>
+      {text}
+    </MuiButton>
+  );
+};
+
+export default Button;

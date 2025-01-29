@@ -1,10 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "./AuthContext";
-import CitySelect from "../../Base Components/cities";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,6 +9,11 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
+
+// Base Components
+import Input from "../../Base Components/Input";
+import Button from "../../Base Components/Button";
+import CitySelect from "../../Base Components/CitySelect";
 
 const SignUp = () => {
   const { signup } = useContext(AuthContext);
@@ -25,12 +27,8 @@ const SignUp = () => {
   });
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
-  const handleCityChange = (city) => {
-    setFormData((prev) => ({ ...prev, city }));
-    setErrors((prev) => ({ ...prev, city: "" })); // Hata varsa sıfırla
-  };
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+
+  const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" })); // Alan değişince hatayı temizle
   };
@@ -44,8 +42,7 @@ const SignUp = () => {
     if (!formData.password) newErrors.password = "Password is required.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Hata yoksa true döner
-  };  
-  
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,71 +82,57 @@ const SignUp = () => {
           </Alert>
         )}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
+          <Input
             required
             fullWidth
             id="firstName"
             label="First Name"
             name="firstName"
             autoFocus
-            onChange={handleChange}
+            onChange={(e) => handleChange(e.target.name, e.target.value)}
             error={!!errors.firstName}
             helperText={errors.firstName}
           />
-          <TextField
-            margin="normal"
+          <Input
             required
             fullWidth
             id="lastName"
             label="Last Name"
             name="lastName"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e.target.name, e.target.value)}
             error={!!errors.lastName}
             helperText={errors.lastName}
           />
-          <CitySelect 
-            margin="normal"
+          <CitySelect
             required
             fullWidth
-            id="city"
             label="Select City"
-            name="city"
+            onCityChange={(city) => handleChange("city", city)}
             error={!!errors.city}
             helperText={errors.city}
-            onCityChange={handleCityChange} 
           />
-          <TextField
-            margin="normal"
+          <Input
             required
             fullWidth
             id="username"
             label="Username"
             name="username"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e.target.name, e.target.value)}
             error={!!errors.username}
             helperText={errors.username}
           />
-          <TextField
-            margin="normal"
+          <Input
             required
             fullWidth
             name="password"
             label="Password"
             type="password"
             id="password"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e.target.name, e.target.value)}
             error={!!errors.password}
             helperText={errors.password}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign Up
-          </Button>
+          <Button type="submit" text="Sign Up" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} />
           <Grid container>
             <Grid item>
               <Link href="/login" variant="body2">

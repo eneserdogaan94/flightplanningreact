@@ -1,16 +1,20 @@
-export const Select = ({ options = [], value, onChange, ...props }) => {
-    return (
-      <select
-        value={value}
-        onChange={onChange}
-        {...props}
-        className="p-2 border rounded-md w-full"
-      >
+import React from "react";
+import { MenuItem, FormControl, InputLabel, Select as MuiSelect, FormHelperText } from "@mui/material";
+
+const Select = ({ label, value, onChange, options, error, helperText, ...props }) => {
+  return (
+    <FormControl fullWidth margin="normal" error={!!error}>
+      <InputLabel>{label}</InputLabel>
+      <MuiSelect value={value} onChange={onChange} {...props}>
         {options.map((option, index) => (
-          <option key={index} value={option.value}>
+          <MenuItem key={index} value={option.value}>
             {option.label}
-          </option>
+          </MenuItem>
         ))}
-      </select>
-    );
-  };
+      </MuiSelect>
+      {helperText && <FormHelperText>{helperText}</FormHelperText>}
+    </FormControl>
+  );
+};
+
+export default Select;

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../Login/AuthContext";
 import { Input } from "../../Base Components/Input";
-import { Button } from "../../Base Components/Button";
+import Button from "../../Base Components/Button";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
 

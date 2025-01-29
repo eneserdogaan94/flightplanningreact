@@ -1,12 +1,21 @@
-export const DatePicker = ({ value, onChange, ...props }) => {
-    return (
-      <input
-        type="date"
+import React from "react";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker as MuiDatePicker } from "@mui/x-date-pickers/DatePicker";
+import TextField from "@mui/material/TextField";
+
+const DatePicker = ({ label, value, onChange, ...props }) => {
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <MuiDatePicker
+        label={label}
         value={value}
-        onChange={onChange}
+        onChange={(newValue) => onChange(newValue)}
+        renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
         {...props}
-        className="p-2 border rounded-md w-full"
       />
-    );
-  };
-  
+    </LocalizationProvider>
+  );
+};
+
+export default DatePicker;

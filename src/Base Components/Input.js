@@ -1,12 +1,19 @@
-export const Input = ({ type = "text", placeholder, value, onChange, ...props }) => {
-    return (
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        {...props}
-        className="p-2 border rounded-md w-full"
-      />
-    );
-  };
+import React from "react";
+import TextField from "@mui/material/TextField";
+
+const Input = ({ label, value, onChange, error, helperText, ...props }) => {
+  return (
+    <TextField
+      label={label}
+      value={value}
+      onChange={onChange}
+      error={!!error}
+      helperText={helperText}
+      fullWidth
+      margin="normal"
+      {...props}
+    />
+  );
+};
+
+export default Input;

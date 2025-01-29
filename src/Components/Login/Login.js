@@ -2,8 +2,6 @@ import React, { useState, useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,6 +10,11 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 
+// Base Components
+import Input from "../../Base Components/Input";
+import Button from "../../Base Components/Button";
+import Checkbox from "../../Base Components/Checkbox";
+
 const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,8 +22,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (name, value) => {
     setCredentials((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" })); // Alan değişince hatayı temizle
   };
@@ -35,11 +37,11 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return; // Validation geçerli değilse devam etme
-
+    if (!validate()) return;
+  
     const success = await login(credentials.username, credentials.password);
     if (success) {
-      navigate("/home");
+      navigate("/home"); // 🛑 Başarısız girişlerde de çalışıyor olabilir!
     } else {
       setGeneralError("Login failed. Please check your credentials.");
     }
@@ -67,40 +69,36 @@ const Login = () => {
           </Alert>
         )}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
+          <Input
             required
             fullWidth
             id="username"
             label="Username"
             name="username"
             autoComplete="username"
+            value={credentials.username}  
             autoFocus
-            onChange={handleChange}
+            onChange={(e) => handleChange(e.target.name, e.target.value)}
             error={!!errors.username}
             helperText={errors.username}
           />
-          <TextField
-            margin="normal"
+          <Input
             required
             fullWidth
             name="password"
             label="Password"
             type="password"
             id="password"
+            value={credentials.password}  
             autoComplete="current-password"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e.target.name, e.target.value)}
             error={!!errors.password}
             helperText={errors.password}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign In
-          </Button>
+          <Checkbox label="Remember me" />
+
+          <Button type="submit" text="Sign In" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} />
+
           <Grid container>
             <Grid item>
               <Link href="/signup" variant="body2">
