@@ -34,12 +34,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = (callback) => {
     setUser(null);
-    setRole(null);
     setToken(null);
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    if (callback) callback(); // Kullanıcıyı yönlendirmek için callback çağır
   };
 
   return (

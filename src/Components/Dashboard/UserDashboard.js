@@ -6,11 +6,13 @@ import Button from "../../Base Components/Button";
 import CitySelect from "../../Base Components/CitySelect";
 
 const UserDashboard = () => {
-  const { user } = useContext(AuthContext);
+  const { user,logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [flights, setFlights] = useState([]);
   const [city, setCity] = useState(user?.city || "");
-
+  const handleLogout = () => {
+    logout(() => navigate("/login"));
+  };
   useEffect(() => {
     if (city) {
       fetchFlights();
@@ -61,7 +63,7 @@ const UserDashboard = () => {
         <p>No flights available from this city.</p>
       )}
 
-      <Button text="Logout" onClick={() => navigate("/login")} />
+    <Button text="Logout" onClick={handleLogout} />
     </div>
   );
 };

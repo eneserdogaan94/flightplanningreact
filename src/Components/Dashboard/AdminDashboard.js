@@ -6,7 +6,7 @@ import Button from "../../Base Components/Button";
 import Input from "../../Base Components/Input";
 
 const AdminDashboard = () => {
-  const { user } = useContext(AuthContext);
+  const { user,logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [flights, setFlights] = useState([]);
   const [newFlight, setNewFlight] = useState({
@@ -53,6 +53,10 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleLogout = () => {
+    logout(() => navigate("/login")); // Çıkış yap ve login sayfasına yönlendir
+  };
+
   return (
     <div>
       <h1>Admin Dashboard</h1>
@@ -92,6 +96,7 @@ const AdminDashboard = () => {
           </li>
         ))}
       </ul>
+      <Button text="Logout" onClick={handleLogout} />
     </div>
   );
 };
