@@ -43,9 +43,9 @@ const Login = () => {
     if (user) {
       if (user.role === "ADMIN") {
         navigate("/admin-dashboard");
-      } else {
+      } else if((user.role === "USER")) {
         navigate("/user-dashboard");
-      }
+      }else navigate("/")
     } else {
       setGeneralError("Login failed. Please check your credentials.");
     }
