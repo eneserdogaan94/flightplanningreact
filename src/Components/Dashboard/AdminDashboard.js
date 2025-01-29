@@ -2,14 +2,26 @@ import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Login/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { AppProvider } from "@toolpad/core/AppProvider";
+import { DashboardLayout } from "@toolpad/core/DashboardLayout";
+import AirplaneTicketIcon from '../../Images/aircraft-airplane-airline-logo-or-label-journey-vector-21441986.jpg';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Box,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import FlightIcon from "@mui/icons-material/Flight";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import LogoutIcon from "@mui/icons-material/Logout";
 import Button from "../../Base Components/Button";
 import Input from "../../Base Components/Input";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
 
 const AdminDashboard = () => {
   const { user, logout } = useContext(AuthContext);
@@ -21,119 +33,133 @@ const AdminDashboard = () => {
     departureTime: "",
     arrivalTime: "",
   });
-
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user, navigate]);
+  const [activeTab, setActiveTab] = useState("flights");
 
   useEffect(() => {
     fetchFlights();
-  }, []);
+  }, [user]);
 
-  // 🛠 Uçuşları API'den çeker (JWT token ile)
   const fetchFlights = async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("No token found, please log in.");
-        return;
-      }
-
       const response = await axios.get("/api/flights", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       setFlights(response.data);
-      console.log("Flights:", response.data);
     } catch (error) {
-      console.error("Error fetching flights:", error.response?.data || error.message);
+      console.error("Error fetching flights:", error);
     }
   };
 
-  // 🛠 Yeni uçuş ekler (JWT token ile)
   const handleAddFlight = async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("No token found, please log in.");
-        return;
-      }
-
       await axios.post("/api/flights", newFlight, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      fetchFlights(); // Listeyi güncelle
+      fetchFlights();
     } catch (error) {
-      console.error("Error adding flight:", error.response?.data || error.message);
+      console.error("Error adding flight:", error);
     }
   };
 
-
-  // 🛠 Logout işlemi
   const handleLogout = () => {
-    logout();
-    navigate("/login");
+    logout(() => navigate("/login"));
   };
 
   return (
-    <div>
-      <h1>Admin Dashboard</h1>
-      <h2>Manage Flights</h2>
+    <AppProvider 
+      navigation={[
+        {
+          title: "Flight List",
+          icon: <FlightIcon />,
+          onClick: () => setActiveTab("flights"),
+        },
+        {
+          title: "Add Flight",
+          icon: <AddCircleOutlineIcon />,
+          onClick: () => setActiveTab("add-flight"),
+        },
+      ]}
+      branding={{
+        logo: <img src={AirplaneTicketIcon} alt="Flight Logo" style={{ height: 40 }} />, 
+        title: 'Flight Planning App',
+        homeUrl: '/',
+      }}
+    >
+      <DashboardLayout>
+        <Box sx={{ padding: "20px" }}>
+          {activeTab === "add-flight" && (
+            <>
+              <Typography variant="h6" sx={{ marginTop: "20px" }}>Add New Flight</Typography>
+              <Box sx={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+                <Input
+                  name="departureAirportId"
+                  label="Departure Airport ID"
+                  onChange={(e) => setNewFlight({ ...newFlight, departureAirportId: e.target.value })}
+                />
+                <Input
+                  name="arrivalAirportId"
+                  label="Arrival Airport ID"
+                  onChange={(e) => setNewFlight({ ...newFlight, arrivalAirportId: e.target.value })}
+                />
+                <Input
+                  name="departureTime"
+                  type="datetime-local"
+                  onChange={(e) => setNewFlight({ ...newFlight, departureTime: e.target.value })}
+                />
+                <Input
+                  name="arrivalTime"
+                  type="datetime-local"
+                  onChange={(e) => setNewFlight({ ...newFlight, arrivalTime: e.target.value })}
+                />
+                <Button text="Add Flight" onClick={handleAddFlight} />
+              </Box>
+            </>
+          )}
 
-      {/* ✈️ Yeni Uçuş Ekleme Formu */}
-      <h3>Add New Flight</h3>
-      <Input
-        name="departureAirportId"
-        label="Departure Airport ID"
-        onChange={(e) => setNewFlight({ ...newFlight, departureAirportId: e.target.value })}
-      />
-      <Input
-        name="arrivalAirportId"
-        label="Arrival Airport ID"
-        onChange={(e) => setNewFlight({ ...newFlight, arrivalAirportId: e.target.value })}
-      />
-      <Input
-        name="departureTime"
-        type="datetime-local"
-        onChange={(e) => setNewFlight({ ...newFlight, departureTime: e.target.value })}
-      />
-      <Input
-        name="arrivalTime"
-        type="datetime-local"
-        onChange={(e) => setNewFlight({ ...newFlight, arrivalTime: e.target.value })}
-      />
-      <Button text="Add Flight" onClick={handleAddFlight} />
-
-      {/* ✈️ Uçuş Listesi */}
-      <h3>Flight List</h3>
-      <List>
-  {flights.length > 0 ? (
-    flights.map((flight) => (
-      <Card key={flight.id} sx={{ marginBottom: 2 }}>
-        <CardContent>
-          <ListItem
-          >
-            <ListItemText
-              primary={`${
-                flight.departureAirport?.city || "Unknown Departure"
-              } → ${flight.arrivalAirport?.city || "Unknown Arrival"}`}
-              secondary={`Departure: ${flight.departureTime || "N/A"} | Arrival: ${flight.arrivalTime || "N/A"}`}
-            />
-          </ListItem>
-        </CardContent>
-      </Card>
-    ))
-  ) : (
-    <Typography>No flights available</Typography>
-  )}
-</List>
-
-
-      <Button text="Logout" onClick={handleLogout} />
-    </div>
+          {activeTab === "flights" && (
+            <>
+              <Typography variant="h6">Flight List</Typography>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Departure City</TableCell>
+                      <TableCell>Arrival City</TableCell>
+                      <TableCell>Departure Time</TableCell>
+                      <TableCell>Arrival Time</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {flights.length > 0 ? (
+                      flights.map((flight) => (
+                        <TableRow key={flight.id}>
+                          <TableCell>{flight.departureAirport?.city || "Unknown"}</TableCell>
+                          <TableCell>{flight.arrivalAirport?.city || "Unknown"}</TableCell>
+                          <TableCell>
+                            {flight.departureTime ? new Date(flight.departureTime).toLocaleString() : "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            {flight.arrivalTime ? new Date(flight.arrivalTime).toLocaleString() : "N/A"}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={5} align="center">
+                          No flights available.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+          )}
+        </Box>
+      </DashboardLayout>
+    </AppProvider>
   );
 };
 
