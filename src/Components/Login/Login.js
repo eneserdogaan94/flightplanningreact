@@ -38,15 +38,13 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
-    const success = await login(credentials.username, credentials.password);
-    if (success) {
-      // 🛑 Kullanıcı rolüne göre yönlendirme ekliyoruz!
-      const role = JSON.parse(localStorage.getItem("user")).role;
-      if (role === "ADMIN") {
+  
+    const user = await login(credentials.username, credentials.password);
+    if (user) {
+      if (user.role === "ADMIN") {
         navigate("/admin-dashboard");
       } else {
-        navigate("/home");
+        navigate("/user-dashboard");
       }
     } else {
       setGeneralError("Login failed. Please check your credentials.");
