@@ -4,9 +4,15 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Button from "../../Base Components/Button";
 import Input from "../../Base Components/Input";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
 
 const AdminDashboard = () => {
-  const { user,logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [flights, setFlights] = useState([]);
   const [newFlight, setNewFlight] = useState({
@@ -20,41 +26,56 @@ const AdminDashboard = () => {
     if (!user) {
       navigate("/login");
     }
-  }, [user]);
+  }, [user, navigate]);
 
   useEffect(() => {
     fetchFlights();
   }, []);
 
+  // 🛠 Uçuşları API'den çeker (JWT token ile)
   const fetchFlights = async () => {
     try {
-      const response = await axios.get("/api/flights");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found, please log in.");
+        return;
+      }
+
+      const response = await axios.get("/api/flights", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
       setFlights(response.data);
+      console.log("Flights:", response.data);
     } catch (error) {
-      console.error("Error fetching flights:", error);
+      console.error("Error fetching flights:", error.response?.data || error.message);
     }
   };
 
+  // 🛠 Yeni uçuş ekler (JWT token ile)
   const handleAddFlight = async () => {
     try {
-      await axios.post("/api/flights", newFlight);
-      fetchFlights();
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found, please log in.");
+        return;
+      }
+
+      await axios.post("/api/flights", newFlight, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      fetchFlights(); // Listeyi güncelle
     } catch (error) {
-      console.error("Error adding flight:", error);
+      console.error("Error adding flight:", error.response?.data || error.message);
     }
   };
 
-  const handleDeleteFlight = async (flightId) => {
-    try {
-      await axios.delete(`/api/flights/${flightId}`);
-      fetchFlights();
-    } catch (error) {
-      console.error("Error deleting flight:", error);
-    }
-  };
 
+  // 🛠 Logout işlemi
   const handleLogout = () => {
-    logout(() => navigate("/login")); // Çıkış yap ve login sayfasına yönlendir
+    logout();
+    navigate("/login");
   };
 
   return (
@@ -62,6 +83,7 @@ const AdminDashboard = () => {
       <h1>Admin Dashboard</h1>
       <h2>Manage Flights</h2>
 
+      {/* ✈️ Yeni Uçuş Ekleme Formu */}
       <h3>Add New Flight</h3>
       <Input
         name="departureAirportId"
@@ -87,15 +109,31 @@ const AdminDashboard = () => {
       />
       <Button text="Add Flight" onClick={handleAddFlight} />
 
+      {/* ✈️ Uçuş Listesi */}
       <h3>Flight List</h3>
-      <ul>
-        {flights.map((flight) => (
-          <li key={flight.id}>
-            {flight.departureAirport.city} → {flight.arrivalAirport.city} at {flight.departureTime}
-            <Button text="Delete" onClick={() => handleDeleteFlight(flight.id)} />
-          </li>
-        ))}
-      </ul>
+      <List>
+  {flights.length > 0 ? (
+    flights.map((flight) => (
+      <Card key={flight.id} sx={{ marginBottom: 2 }}>
+        <CardContent>
+          <ListItem
+          >
+            <ListItemText
+              primary={`${
+                flight.departureAirport?.city || "Unknown Departure"
+              } → ${flight.arrivalAirport?.city || "Unknown Arrival"}`}
+              secondary={`Departure: ${flight.departureTime || "N/A"} | Arrival: ${flight.arrivalTime || "N/A"}`}
+            />
+          </ListItem>
+        </CardContent>
+      </Card>
+    ))
+  ) : (
+    <Typography>No flights available</Typography>
+  )}
+</List>
+
+
       <Button text="Logout" onClick={handleLogout} />
     </div>
   );
