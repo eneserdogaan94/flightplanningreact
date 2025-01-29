@@ -97,13 +97,11 @@ const AdminDashboard = () => {
       />
       <Input
         name="departureTime"
-        label="Departure Time"
         type="datetime-local"
         onChange={(e) => setNewFlight({ ...newFlight, departureTime: e.target.value })}
       />
       <Input
         name="arrivalTime"
-        label="Arrival Time"
         type="datetime-local"
         onChange={(e) => setNewFlight({ ...newFlight, arrivalTime: e.target.value })}
       />
