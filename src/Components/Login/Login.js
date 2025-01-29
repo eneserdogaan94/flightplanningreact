@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { AuthContext } from "../../Utility/AuthContext";
+import { AuthContext } from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Link from "@mui/material/Link";
@@ -40,12 +40,16 @@ const Login = () => {
     if (!validate()) return;
   
     const user = await login(credentials.username, credentials.password);
+    // Artık user bir nesne ve içinde role değeri var (örneğin { role: 'ADMIN' })
+  
     if (user) {
       if (user.role === "ADMIN") {
-        navigate("/admin-dashboard");
-      } else if((user.role === "USER")) {
-        navigate("/user-dashboard");
-      }else navigate("/")
+        navigate("/admin-home");
+      } else if (user.role === "USER") {
+        navigate("/user-home");
+      } else {
+        navigate("/");
+      }
     } else {
       setGeneralError("Login failed. Please check your credentials.");
     }

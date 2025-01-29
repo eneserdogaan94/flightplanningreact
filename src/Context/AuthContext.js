@@ -18,19 +18,19 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post("/api/auth/login", { username, password });
       const { token, role } = response.data;
-      console.log(response.data)
-      console.log(response.data)
-      setUser({ role }); 
+  
+      setUser({ role });
       setRole(role);
       setToken(token);
-
+  
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
-
-      return true; // Login başarılı
+  
+      // Burada sadece true döndürmek yerine rolü döndürelim:
+      return { role };
     } catch (error) {
       console.error("Login failed:", error);
-      return false; // Login başarısız
+      return null; // veya undefined
     }
   };
 

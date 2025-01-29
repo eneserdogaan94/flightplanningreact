@@ -6,7 +6,7 @@ import UserHome from "./Components/Dashboard/UserDashboard";
 import AdminDashboard from "./Components/Dashboard/AdminDashboard";
 import FlightList from "./Components/Dashboard/FlightList";
 import AddFlight from "./Components/Dashboard/AddFlight";
-import { AuthProvider, AuthContext } from "./Utility/AuthContext";
+import { AuthProvider, AuthContext } from "./Context/AuthContext";
 
 const PrivateRoute = ({ element, allowedRoles }) => {
   const { role } = useContext(AuthContext);

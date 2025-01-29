@@ -1,21 +1,37 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../Utility/AuthContext";
-import { useNavigate, Outlet, useLocation } from "react-router-dom"; // ✅ useLocation ve useEffect kullanıldı
+import { AuthContext } from "../../Context/AuthContext";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { AppProvider } from "@toolpad/core/AppProvider";
-import { DashboardLayout } from "@toolpad/core/DashboardLayout";
-import AirplaneTicketIcon from "../../Images/aircraft-airplane-airline-logo-or-label-journey-vector-21441986.jpg";
-import { Box, Typography, IconButton } from "@mui/material";
+
+// MUI bileşenleri
+import {
+  Box,
+  Typography,
+  IconButton,
+  BottomNavigation,
+  BottomNavigationAction,
+  Paper,
+  useTheme,
+} from "@mui/material";
+
 import FlightIcon from "@mui/icons-material/Flight";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
 
+// Görsel (Logo)
+import AirplaneTicketIcon from "../../Images/aircraft-airplane-airline-logo-or-label-journey-vector-21441986.jpg";
+
 const AdminDashboard = () => {
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ Şu anki URL yolunu al
-  const [currentPath, setCurrentPath] = useState(location.pathname); // ✅ URL değişimini takip etmek için state oluştur
+  const location = useLocation();
+  const theme = useTheme();
 
-  // 🏆 URL değiştiğinde içeriği zorla güncelle
+  // URL değiştiğinde layout’un tekrar renderlanması için
+  const [currentPath, setCurrentPath] = useState(location.pathname);
+  // BottomNavigation seçili tab
+  const [bottomNavValue, setBottomNavValue] = useState(0);
+
   useEffect(() => {
     setCurrentPath(location.pathname);
   }, [location.pathname]);
@@ -24,30 +40,56 @@ const AdminDashboard = () => {
     logout(() => navigate("/login"));
   };
 
-  const navigationItems = [
+  // Alttaki BottomNavigation itemları
+  const bottomNavItems = [
     {
-      title: "Flight List",
+      label: "Flight List",
       icon: <FlightIcon />,
       onClick: () => navigate("/admin-home/flights"),
     },
     {
-      title: "Add Flight",
+      label: "Add Flight",
       icon: <AddCircleOutlineIcon />,
       onClick: () => navigate("/admin-home/add-flight"),
     },
   ];
 
   return (
-    <AppProvider 
-      navigation={navigationItems}
-      branding={{
-        logo: <img src={AirplaneTicketIcon} alt="Flight Logo" style={{ height: 40 }} />, 
-        title: "Flight Planning App",
-        homeUrl: "/admin-home/flights",
-      }}
+    <AppProvider
+      /*
+        navigation prop’unu vermeyerek veya boş dizi vererek
+        Toolpad’in sol menüsünü devre dışı bırakabilirsiniz.
+        Örn: navigation={[]}
+      */
+      // navigation={[]} 
+      
+      // Eğer Toolpad branding özelliğini kullanmak isterseniz buraya ekleyebilirsiniz.
+      // Ama "eskiden eklediğiniz header" zaten logo içerdiği için ek branding'e gerek yok.
+      // branding={{
+      //   logo: (
+      //     <img
+      //       src={AirplaneTicketIcon}
+      //       alt="Flight Logo"
+      //       style={{ height: 40, objectFit: "contain" }}
+      //     />
+      //   ),
+      //   title: "Flight Planning App",
+      //   homeUrl: "/admin-home/flights",
+      // }}
     >
-      {/* 🏆 Key prop'u ile sayfa değişimlerini algılayıp tekrar render ediyoruz */}
-      <DashboardLayout key={currentPath}>
+      {/* Tüm ekranı kaplayacak kendi layout’umuz */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh", // tam ekran yüksekliği
+        }}
+        key={currentPath}
+      >
+        {/* 
+          ESKİDEN EKLEDİĞİNİZ HEADER (Logo + "Admin Dashboard" + Logout Butonu)
+          AppBar yerine basit bir Box ile üst kısım.
+        */}
         <Box
           sx={{
             display: "flex",
@@ -57,17 +99,66 @@ const AdminDashboard = () => {
             borderBottom: "1px solid #ddd",
           }}
         >
-          <Typography variant="h6">Admin Dashboard</Typography>
+          {/* Solda Logo + Başlık */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <img
+              src={AirplaneTicketIcon}
+              alt="Flight Logo"
+              style={{ height: 40, marginRight: 10 }}
+            />
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+              Admin Dashboard
+            </Typography>
+          </Box>
+
+          {/* Sağda Logout Butonu */}
           <IconButton onClick={handleLogout} color="error">
             <LogoutIcon />
           </IconButton>
         </Box>
-        
-        {/* 🏆 Nested Routes İçin Outlet Kullanıldı */}
-        <Box sx={{ padding: "20px" }}>
+
+        {/* İÇERİK (NESTED ROUTES) */}
+        <Box
+          component="main"
+          sx={{
+            flex: 1,
+            overflow: "auto",
+            p: 2,
+          }}
+        >
           <Outlet />
         </Box>
-      </DashboardLayout>
+
+        {/* ALT KISIM (BOTTOM NAVIGATION) */}
+        <Paper
+          elevation={3}
+          sx={{
+            position: "sticky",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            borderTop: `1px solid ${theme.palette.divider}`,
+          }}
+        >
+          <BottomNavigation
+            showLabels
+            value={bottomNavValue}
+            onChange={(_, newValue) => {
+              setBottomNavValue(newValue);
+              // İlgili rota yönlendirmesi
+              bottomNavItems[newValue]?.onClick?.();
+            }}
+          >
+            {bottomNavItems.map((item, index) => (
+              <BottomNavigationAction
+                key={index}
+                label={item.label}
+                icon={item.icon}
+              />
+            ))}
+          </BottomNavigation>
+        </Paper>
+      </Box>
     </AppProvider>
   );
 };
