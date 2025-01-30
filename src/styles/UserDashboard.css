@@ -12,7 +12,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 25px;
-    background-color: #1976d2;
+    background-color: white;
     border-bottom: 3px solid #1565c0;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   }
@@ -24,12 +24,12 @@
   
   .user-dashboard-header h6 {
     font-weight: bold;
-    color: white;
+    color: #1976d2;
   }
   
   /* 📌 **Logout Butonu** */
   .user-dashboard-logout {
-    color: white !important;
+    color: #1976d2 !important;
     transition: transform 0.2s ease-in-out;
   }
   
@@ -58,7 +58,7 @@
   
   /* 📌 **Temizle Butonu** */
   .user-dashboard-clear-btn {
-    color: red;
+    color: #1976d2;
     border: 1px solid red;
     padding: 6px 10px;
     border-radius: 5px;
