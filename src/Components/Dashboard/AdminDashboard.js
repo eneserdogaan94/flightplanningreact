@@ -20,6 +20,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 import AirplaneTicketIcon from "../../Images/aircraft-airplane-airline-logo-or-label-journey-vector-21441986.jpg";
 
+import "../../styles/AdminDashboard.css"; // 📌 **Yeni Eklenen CSS Dosyası**
+
 const AdminDashboard = () => {
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -33,7 +35,6 @@ const AdminDashboard = () => {
   useEffect(() => {
     setCurrentPath(location.pathname);
 
-    
     if (location.pathname === "/admin-home") {
       showToast("success", "Hoş geldiniz, Admin!");
     }
@@ -78,60 +79,26 @@ const AdminDashboard = () => {
 
   return (
     <AppProvider>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-        }}
-        key={currentPath}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "10px 20px",
-            borderBottom: "1px solid #ddd",
-          }}
-        >
+      <Box className="admin-dashboard">
+        {/* 📌 **Header Alanı** */}
+        <Box className="admin-dashboard-header">
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img
-              src={AirplaneTicketIcon}
-              alt="Flight Logo"
-              style={{ height: 40, marginRight: 10 }}
-            />
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              Admin Dashboard
-            </Typography>
+            <img src={AirplaneTicketIcon} alt="Flight Logo" />
+            <Typography variant="h6">Admin Dashboard</Typography>
           </Box>
 
-          <IconButton onClick={handleLogout} color="error">
+          <IconButton className="admin-dashboard-logout" onClick={handleLogout}>
             <LogoutIcon />
           </IconButton>
         </Box>
 
-        <Box
-          component="main"
-          sx={{
-            flex: 1,
-            overflow: "auto",
-            p: 2,
-          }}
-        >
+        {/* 📌 **İçerik Alanı** */}
+        <Box className="admin-dashboard-content">
           <Outlet />
         </Box>
 
-        <Paper
-          elevation={3}
-          sx={{
-            position: "sticky",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            borderTop: `1px solid ${theme.palette.divider}`,
-          }}
-        >
+        {/* 📌 **Bottom Navigation** */}
+        <Paper className="admin-dashboard-bottom-nav" elevation={3}>
           <BottomNavigation
             showLabels
             value={bottomNavValue}
@@ -146,12 +113,15 @@ const AdminDashboard = () => {
           </BottomNavigation>
         </Paper>
 
-        <ToastNotification
-          open={toast.open}
-          severity={toast.severity}
-          message={toast.message}
-          onClose={() => setToast({ ...toast, open: false })}
-        />
+        {/* 📌 **Toast Notification** */}
+        <Box className="admin-dashboard-toast">
+          <ToastNotification
+            open={toast.open}
+            severity={toast.severity}
+            message={toast.message}
+            onClose={() => setToast({ ...toast, open: false })}
+          />
+        </Box>
       </Box>
     </AppProvider>
   );

@@ -18,7 +18,7 @@ import "../../styles/FlightList.css"; // 📌 CSS Dosyasını İçeri Aktardık
 const FlightList = () => {
   const [flights, setFlights] = useState([]);
   const [page, setPage] = useState(0); // 📌 Aktif sayfa
-  const [rowsPerPage, setRowsPerPage] = useState(5); // 📌 Sayfa başına uçuş sayısı
+  const [rowsPerPage, setRowsPerPage] = useState(10); // 📌 Sayfa başına uçuş sayısı
   const [totalFlights, setTotalFlights] = useState(0); // 📌 Toplam uçuş sayısı
 
   useEffect(() => {

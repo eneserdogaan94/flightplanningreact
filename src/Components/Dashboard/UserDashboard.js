@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ToastNotification from "../../Base Components/ToastNotification";
-
 import { AppProvider } from "@toolpad/core/AppProvider";
 import {
   Box,
   Typography,
   IconButton,
-  useTheme,
   Paper,
   Table,
   TableBody,
@@ -17,20 +15,17 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button,
+  TablePagination,
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
-import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
-
+import CancelScheduleSendOutlined from "@mui/icons-material/CancelScheduleSendOutlined";
 import Input from "../../Base Components/Input";
-
 import AirplaneTicketIcon from "../../Images/aircraft-airplane-airline-logo-or-label-journey-vector-21441986.jpg";
-import { CancelScheduleSend, CancelScheduleSendOutlined } from "@mui/icons-material";
+import "../../styles/UserDashboard.css"; // 📌 CSS dosyası eklendi.
 
 const UserDashboard = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const theme = useTheme();
   const [toast, setToast] = useState({ open: false, severity: "info", message: "" });
   const [flights, setFlights] = useState([]);
   const [filteredFlights, setFilteredFlights] = useState([]);
@@ -40,19 +35,14 @@ const UserDashboard = () => {
     date: "",
   });
 
-  const showToast = (severity, message) => {
-    setToast({ open: true, severity, message });
-
-    setTimeout(() => {
-      setToast((prev) => ({ ...prev, open: false }));
-    }, 5000);
-  };
+  // **Pagination (Sayfalama) için State**
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     if (!user) {
       navigate("/login");
     } else {
-      showToast("success", `Hoş geldiniz!`);
       fetchFlights();
     }
   }, [user, navigate]);
@@ -67,8 +57,15 @@ const UserDashboard = () => {
       setFilteredFlights(response.data);
     } catch (error) {
       console.error("Error fetching flights:", error);
-      showToast("error", `Uçuşlar yüklenirken bir hata oluştu.${error}`);
+      showToast("error", "Uçuşlar yüklenirken bir hata oluştu.");
     }
+  };
+
+  const showToast = (severity, message) => {
+    setToast({ open: true, severity, message });
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, open: false }));
+    }, 5000);
   };
 
   const handleFilterChange = (event) => {
@@ -108,80 +105,63 @@ const UserDashboard = () => {
     });
   };
 
+  // 📌 **Tablo Renklendirme Fonksiyonu**
+  const getTextColor = (departureTime) => {
+    const now = new Date();
+    const flightDate = new Date(departureTime);
+    const diffInDays = Math.floor((flightDate - now) / (1000 * 60 * 60 * 24));
+
+    if (flightDate < now) {
+      return "red"; // Geçmiş uçuşlar
+    } else if (diffInDays <= 3) {
+      return "orange"; // Yakın tarihli uçuşlar
+    } else {
+      return "blue"; // Uzak tarihli uçuşlar
+    }
+  };
+
+  // 📌 **Sayfalama için event handler**
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <AppProvider>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-          backgroundColor: theme.palette.background.default,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "10px 20px",
-            borderBottom: "1px solid #ddd",
-            backgroundColor: theme.palette.background.paper,
-          }}
-        >
+      <Box className="user-dashboard">
+        {/* 📌 **Header** */}
+        <Box className="user-dashboard-header">
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img
-              src={AirplaneTicketIcon}
-              alt="Flight Logo"
-              style={{ height: 40, marginRight: 10 }}
-            />
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              Kullanıcı Dashboard
-            </Typography>
+            <img src={AirplaneTicketIcon} alt="Flight Logo" />
+            <Typography variant="h6">Kullanıcı Dashboard</Typography>
           </Box>
-
-          <IconButton onClick={handleLogout}>
+          <IconButton className="user-dashboard-logout" onClick={handleLogout}>
             <LogoutIcon />
           </IconButton>
         </Box>
 
-        <Box
-          component="main"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "100vh",
-          }}
-        >
-          <h2>Uçuş Listesi</h2>
-          <div style={{ display: "flex", gap: "10px", marginBottom: "20px", alignItems: "center" }}>
-            <Input
-              name="departure"
-              label="Kalkış Şehri"
-              value={filter.departure}
-              onChange={handleFilterChange}
-            />
-            <Input
-              name="arrival"
-              label="Varış Şehri"
-              value={filter.arrival}
-              onChange={handleFilterChange}
-            />
-            <Input
-              name="date"
-              label=""
-              type="date"
-              value={filter.date}
-              onChange={handleFilterChange}
-            />
+        {/* 📌 **İçerik** */}
+        <Box className="user-dashboard-content">
+          <Typography variant="h5">Uçuş Listesi</Typography>
 
-            {/* Temizle Butonu (Küçük) */}
-            <IconButton
-              onClick={handleClearFilters}
-            >
+          {/* 📌 **Filtreleme Alanı** */}
+          <Box className="user-dashboard-filters">
+            <Input name="departure" label="Kalkış Şehri" value={filter.departure} onChange={handleFilterChange} />
+            <Input name="arrival" label="Varış Şehri" value={filter.arrival} onChange={handleFilterChange} />
+            <Input name="date" label="" type="date" value={filter.date} onChange={handleFilterChange} />
+
+            {/* 📌 **Temizle Butonu** */}
+            <IconButton className="user-dashboard-clear-btn" onClick={handleClearFilters}>
               <CancelScheduleSendOutlined />
             </IconButton>
-          </div>
-          <TableContainer component={Paper}>
+          </Box>
+
+          {/* 📌 **Uçuş Listesi + Pagination** */}
+          <TableContainer component={Paper} className="user-dashboard-table">
             <Table>
               <TableHead>
                 <TableRow>
@@ -192,34 +172,34 @@ const UserDashboard = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-  {filteredFlights.length > 0 ? (
-    filteredFlights.map((flight) => (
-      <TableRow key={flight.id}>
-        <TableCell>{flight.departureAirport?.city || "Unknown"}</TableCell>
-        <TableCell>{flight.arrivalAirport?.city || "Unknown"}</TableCell>
-        <TableCell>
-          {flight.departureTime ? new Date(flight.departureTime).toLocaleString() : "N/A"}
-        </TableCell>
-        <TableCell>
-          {flight.arrivalTime ? new Date(flight.arrivalTime).toLocaleString() : "N/A"}
-        </TableCell>
-      </TableRow>
-    ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan={4} align="center">
-        Uçuş bulunmamaktadır.
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
+                {filteredFlights.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((flight) => {
+                  const textColor = getTextColor(flight.departureTime);
+                  return (
+                    <TableRow key={flight.id}>
+                      <TableCell sx={{ color: textColor }}>{flight.departureAirport?.city || "Unknown"}</TableCell>
+                      <TableCell sx={{ color: textColor }}>{flight.arrivalAirport?.city || "Unknown"}</TableCell>
+                      <TableCell sx={{ color: textColor }}>
+                        {flight.departureTime ? new Date(flight.departureTime).toLocaleString() : "N/A"}
+                      </TableCell>
+                      <TableCell sx={{ color: textColor }}>
+                        {flight.arrivalTime ? new Date(flight.arrivalTime).toLocaleString() : "N/A"}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
             </Table>
           </TableContainer>
-          <ToastNotification
-            open={toast.open}
-            severity={toast.severity}
-            message={toast.message}
-            onClose={() => setToast({ ...toast, open: false })}
+
+          {/* 📌 **Pagination** */}
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={filteredFlights.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Box>
       </Box>
