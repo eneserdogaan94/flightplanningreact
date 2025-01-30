@@ -1,0 +1,49 @@
+/* 📌 Tablo Konteyneri */
+.flight-list-container {
+    max-width: 900px;
+    margin: auto;
+    margin-top: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 📌 Başlık */
+  .flight-list-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* 📌 Bilgilendirme Mesajı */
+  .flight-info-alert {
+    margin-bottom: 15px;
+  }
+  
+  /* 📌 Renkli Satır Yazıları */
+  .flight-red {
+    color: red;
+    font-weight: bold;
+  }
+  .flight-orange {
+    color: orange;
+    font-weight: bold;
+  }
+  .flight-blue {
+    color: blue;
+    font-weight: bold;
+  }
+  
+  /* 📌 Tablo Satırları */
+  .flight-table-row:hover {
+    background-color: #f5f5f5 !important;
+  }
+  
+  /* 📌 Sayfalama */
+  .flight-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
