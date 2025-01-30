@@ -36,11 +36,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
   
-      // Burada sadece true döndürmek yerine rolü döndürelim:
       return { role };
     } catch (error) {
       console.error("Login failed:", error);
-      return null; // veya undefined
+      return null; 
     }
   };
 
@@ -49,7 +48,7 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    if (callback) callback(); // Kullanıcıyı yönlendirmek için callback çağır
+    if (callback) callback(); 
   };
 
   return (

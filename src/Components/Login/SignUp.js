@@ -9,6 +9,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
+import ToastNotification from "../../Base Components/ToastNotification";
 
 // Base Components
 import Input from "../../Base Components/Input";
@@ -27,10 +28,18 @@ const SignUp = () => {
   });
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
+  const [toast, setToast] = useState({ open: false, severity: "info", message: "" });
+
+  const showToast = (severity, message) => {
+    setToast({ open: true, severity, message });
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, open: false }));
+    }, 5000);
+  };
 
   const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); // Alan değişince hatayı temizle
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const validate = () => {
@@ -41,22 +50,25 @@ const SignUp = () => {
     if (!formData.username) newErrors.username = "Username is required.";
     if (!formData.password) newErrors.password = "Password is required.";
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Hata yoksa true döner
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return; // Validation geçerli değilse devam etme
+    if (!validate()) return;
 
     try {
       const success = await signup(formData);
       if (success) {
-        navigate("/login");
+        showToast("success", "Kullanıcı kaydı tamamlandı.Giriş sayfasına yönlendiriliyorsunuz.");
+        setTimeout(() => navigate("/login"), 2000);
       } else {
-        setGeneralError("Signup failed. Please try again.");
+        showToast("error", "Kayıt sırasında hata oluştu lütfen tekrar deneyiniz.");
+        setGeneralError("Kayıt sırasında hata oluştu lütfen tekrar deneyiniz.");
       }
     } catch (err) {
-      setGeneralError(err.message || "Something went wrong.");
+      showToast("error", err.message || "Kayıt sırasında hata oluştu lütfen tekrar deneyiniz.");
+      setGeneralError(err.message || "Kayıt sırasında hata oluştu lütfen tekrar deneyiniz.");
     }
   };
 
@@ -86,7 +98,7 @@ const SignUp = () => {
             required
             fullWidth
             id="firstName"
-            label="First Name"
+            label="Ad"
             name="firstName"
             autoFocus
             onChange={(e) => handleChange(e.target.name, e.target.value)}
@@ -97,7 +109,7 @@ const SignUp = () => {
             required
             fullWidth
             id="lastName"
-            label="Last Name"
+            label="Soyad"
             name="lastName"
             onChange={(e) => handleChange(e.target.name, e.target.value)}
             error={!!errors.lastName}
@@ -106,7 +118,7 @@ const SignUp = () => {
           <CitySelect
             required
             fullWidth
-            label="Select City"
+            label="Şehir"
             onCityChange={(city) => handleChange("city", city)}
             error={!!errors.city}
             helperText={errors.city}
@@ -115,7 +127,7 @@ const SignUp = () => {
             required
             fullWidth
             id="username"
-            label="Username"
+            label="Kullanıcı Adı"
             name="username"
             onChange={(e) => handleChange(e.target.name, e.target.value)}
             error={!!errors.username}
@@ -125,7 +137,7 @@ const SignUp = () => {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Parola"
             type="password"
             id="password"
             onChange={(e) => handleChange(e.target.name, e.target.value)}
@@ -136,12 +148,20 @@ const SignUp = () => {
           <Grid container>
             <Grid item>
               <Link href="/login" variant="body2">
-                {"Already have an account? Login"}
+                {"Daha önce kayıt oldunuz mu?"}
               </Link>
             </Grid>
           </Grid>
         </Box>
       </Box>
+
+      {/* Toast Notification */}
+      <ToastNotification
+        open={toast.open}
+        severity={toast.severity}
+        message={toast.message}
+        onClose={() => setToast({ ...toast, open: false })}
+      />
     </Container>
   );
 };

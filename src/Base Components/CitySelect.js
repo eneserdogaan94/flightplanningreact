@@ -33,7 +33,7 @@ const CitySelect = ({ onCityChange }) => {
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Select City"
+            label="Şehir"
             placeholder="Search city"
             error={error} // Hata durumunu TextField'a ilet
             helperText={error ? "Şehir seçilmesi zorunludur." : ""} // Hata mesajı

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ToastNotification from "../../Base Components/ToastNotification"; // Bileşeni içe aktar
+
 
 // MUI & Toolpad
 import { AppProvider } from "@toolpad/core/AppProvider";
@@ -31,7 +33,7 @@ const UserDashboard = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const theme = useTheme();
-
+  const [toast, setToast] = useState({ open: false, severity: "info", message: "" });
   const [flights, setFlights] = useState([]);
   const [filteredFlights, setFilteredFlights] = useState([]);
   const [filter, setFilter] = useState({
@@ -39,6 +41,9 @@ const UserDashboard = () => {
     arrival: "",
     date: "",
   });
+  const showToast = (severity, message) => {
+    setToast({ open: true, severity, message });
+  };
 
   useEffect(() => {
     if (!user) {
@@ -91,17 +96,14 @@ const UserDashboard = () => {
 
   return (
     <AppProvider>
-      {/* Root container that mimics the AdminDashboard theme */}
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           minHeight: "100vh",
-          // Same background as in AdminDashboard
           backgroundColor: theme.palette.background.default,
         }}
       >
-        {/* HEADER (Logo + Title + Logout Icon) */}
         <Box
           sx={{
             display: "flex",
@@ -119,7 +121,7 @@ const UserDashboard = () => {
               style={{ height: 40, marginRight: 10 }}
             />
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              User Dashboard
+              Kullanıcı Dashboard
             </Typography>
           </Box>
 
@@ -128,7 +130,6 @@ const UserDashboard = () => {
           </IconButton>
         </Box>
 
-        {/* MAIN CONTENT: Centered & padded just like AdminDashboard */}
         <Box
           component="main"
           sx={{
@@ -137,19 +138,16 @@ const UserDashboard = () => {
             minHeight: "100vh", // tam ekran yüksekliği
           }}
         >
-          {/* === (BELOW) Unchanged content from original UserDashboard === */}
-          <h2>Flights List</h2>
-
-          {/* Filter section */}
+          <h2>Uçuş Listesi</h2>
           <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
             <Input
               name="departure"
-              label="Departure City"
+              label="Kalkış Şehri"
               onChange={handleFilterChange}
             />
             <Input
               name="arrival"
-              label="Arrival City"
+              label="Varış Şehri"
               onChange={handleFilterChange}
             />
             <Input
@@ -159,16 +157,14 @@ const UserDashboard = () => {
               onChange={handleFilterChange}
             />
           </div>
-
-          {/* Flights table */}
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Departure City</TableCell>
-                  <TableCell>Arrival City</TableCell>
-                  <TableCell>Departure Time</TableCell>
-                  <TableCell>Arrival Time</TableCell>
+                  <TableCell>Kalkış Şehri</TableCell>
+                  <TableCell>Varış Şehri</TableCell>
+                  <TableCell>Kalkış Saati</TableCell>
+                  <TableCell>Varış Saati</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -196,14 +192,19 @@ const UserDashboard = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={4} align="center">
-                      No flights available.
+                      Gösterilecek bir uçuş bulunmamaktadır.
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
           </TableContainer>
-
+          <ToastNotification
+            open={toast.open}
+            severity={toast.severity}
+            message={toast.message}
+            onClose={() => setToast({ ...toast, open: false })}
+          />
          
         </Box>
       </Box>
