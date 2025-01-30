@@ -56,25 +56,39 @@ const AddFlight = () => {
         departureTime,
         arrivalTime,
       };
-
+  
       const token = localStorage.getItem("token");
-
+  
       await axios.post("/api/flights/saveFlight", flightData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       showToast("success", "Uçuş başarıyla kaydedildi!");
-      
+  
       setTimeout(() => {
         navigate("/admin-home/flights");
       }, 1500);
     } catch (error) {
       console.error("Error saving flight:", error);
-      showToast("error", "Uçuş eklenirken bir hata oluştu.");
+  
+      let errorMessage = "Uçuş eklenirken bir hata oluştu.";
+  
+      if (error.response && error.response.data) {
+        if (typeof error.response.data === "string") {
+          errorMessage = error.response.data;
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+  
+      showToast("error", errorMessage);
     }
   };
+  
 
   return (
     <Box
