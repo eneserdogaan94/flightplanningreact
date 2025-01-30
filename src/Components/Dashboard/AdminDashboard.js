@@ -60,7 +60,7 @@ const AdminDashboard = () => {
       onClick: () => {
         showToast("info", "Uçuş listesine yönlendiriliyorsunuz...");
         setTimeout(() => {
-          logout(() => navigate("/admin-home/flights"));
+          navigate("/admin-home/flights");
         }, 500);
       },
     },
@@ -70,7 +70,7 @@ const AdminDashboard = () => {
       onClick: () => {
         showToast("info", "Yeni uçuş ekleme sayfasına yönlendiriliyorsunuz...");
         setTimeout(() => {
-          logout(() => navigate("/admin-home/add-flight"));
+          navigate("/admin-home/add-flight");
         }, 500);
       },
     },
