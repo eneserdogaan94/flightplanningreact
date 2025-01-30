@@ -52,7 +52,7 @@ const UserDashboard = () => {
     if (!user) {
       navigate("/login");
     } else {
-      showToast("success", `Hoş geldiniz, ${user.username}!`);
+      showToast("success", `Hoş geldiniz!`);
       fetchFlights();
     }
   }, [user, navigate]);
@@ -67,7 +67,7 @@ const UserDashboard = () => {
       setFilteredFlights(response.data);
     } catch (error) {
       console.error("Error fetching flights:", error);
-      showToast("error", "Uçuşlar yüklenirken bir hata oluştu.");
+      showToast("error", `Uçuşlar yüklenirken bir hata oluştu.${error}`);
     }
   };
 

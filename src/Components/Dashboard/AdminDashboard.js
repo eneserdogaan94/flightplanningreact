@@ -58,16 +58,20 @@ const AdminDashboard = () => {
       label: "Uçuş Listesi",
       icon: <FlightIcon />,
       onClick: () => {
-        navigate("/admin-home/flights");
         showToast("info", "Uçuş listesine yönlendiriliyorsunuz...");
+        setTimeout(() => {
+          logout(() => navigate("/admin-home/flights"));
+        }, 500);
       },
     },
     {
       label: "Uçuş Ekle",
       icon: <AddCircleOutlineIcon />,
       onClick: () => {
-        navigate("/admin-home/add-flight");
         showToast("info", "Yeni uçuş ekleme sayfasına yönlendiriliyorsunuz...");
+        setTimeout(() => {
+          logout(() => navigate("/admin-home/add-flight"));
+        }, 500);
       },
     },
   ];
