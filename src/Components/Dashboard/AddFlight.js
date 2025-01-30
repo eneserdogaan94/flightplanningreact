@@ -88,7 +88,7 @@ const AddFlight = () => {
       <form onSubmit={handleSubmit}>
         {/* Departure Select */}
         <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel>Departure Airport</InputLabel>
+          <InputLabel>Kalkış Havalimanı</InputLabel>
           <Select
             value={departureAirport}
             onChange={(e) => setDepartureAirport(e.target.value)}
@@ -104,7 +104,7 @@ const AddFlight = () => {
 
         {/* Arrival Select */}
         <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel>Arrival Airport</InputLabel>
+          <InputLabel>Varış Havalimanı</InputLabel>
           <Select
             value={arrivalAirport}
             onChange={(e) => setArrivalAirport(e.target.value)}
@@ -120,7 +120,7 @@ const AddFlight = () => {
 
         {/* Departure Time */}
         <TextField
-          label="Departure Time"
+          label="Kalkış Saati"
           type="datetime-local"
           fullWidth
           value={departureTime}
@@ -132,7 +132,7 @@ const AddFlight = () => {
 
         {/* Arrival Time */}
         <TextField
-          label="Arrival Time"
+          label="Varış Saati"
           type="datetime-local"
           fullWidth
           value={arrivalTime}

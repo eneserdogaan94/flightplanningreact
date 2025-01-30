@@ -191,7 +191,7 @@ const UserDashboard = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={4} align="center">
-                      Gösterilecek bir uçuş bulunmamaktadır.
+                      Uçuş bulunmamaktadır.
                     </TableCell>
                   </TableRow>
                 )}

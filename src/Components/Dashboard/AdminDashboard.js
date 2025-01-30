@@ -41,12 +41,12 @@ const AdminDashboard = () => {
   // Alttaki BottomNavigation itemları
   const bottomNavItems = [
     {
-      label: "Flight List",
+      label: "Uçuş Listesi",
       icon: <FlightIcon />,
       onClick: () => navigate("/admin-home/flights"),
     },
     {
-      label: "Add Flight",
+      label: "Uçuş Ekle",
       icon: <AddCircleOutlineIcon />,
       onClick: () => navigate("/admin-home/add-flight"),
     },

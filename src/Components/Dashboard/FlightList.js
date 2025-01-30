@@ -23,15 +23,15 @@ const FlightList = () => {
 
   return (
     <>
-      <Typography variant="h6">Flight List</Typography>
+      <Typography variant="h6">Uçuş Listesi</Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Departure City</TableCell>
-              <TableCell>Arrival City</TableCell>
-              <TableCell>Departure Time</TableCell>
-              <TableCell>Arrival Time</TableCell>
+              <TableCell>Kalkış Şehri</TableCell>
+              <TableCell>Varış Şehri</TableCell>
+              <TableCell>Kalkış Saati</TableCell>
+              <TableCell>Varış Saati</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -47,7 +47,7 @@ const FlightList = () => {
             ) : (
               <TableRow>
                 <TableCell colSpan={4} align="center">
-                  No flights available.
+                  Uçuş bulunamadı.
                 </TableCell>
               </TableRow>
             )}
