@@ -16,7 +16,7 @@ import Input from "../../Base Components/Input";
 import Button from "../../Base Components/Button";
 import Checkbox from "../../Base Components/Checkbox";
 import { motion } from "framer-motion";
-import ToastNotification from "../../Base Components/ToastNotification"; // Bildirim bileşeni eklendi
+import ToastNotification from "../../Base Components/ToastNotification";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -27,11 +27,9 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ open: false, severity: "info", message: "" });
 
-  // Toast mesajı göstermek için fonksiyon
   const showToast = (severity, message) => {
     setToast({ open: true, severity, message });
 
-    // 5 saniye sonra toast'ı kapat
     setTimeout(() => {
       setToast((prev) => ({ ...prev, open: false }));
     }, 5000);
@@ -54,7 +52,7 @@ const Login = () => {
     e.preventDefault();
     if (!validate()) return;
     const user = await login(credentials.username, credentials.password);
-    setLoading(true); // Animasyonu başlat
+    setLoading(true);
     if (user) {
       showToast("success", "Giriş başarılı! Yönlendiriliyorsunuz...");
       setTimeout(() => {
@@ -65,7 +63,7 @@ const Login = () => {
         } else {
           navigate("/");
         }
-      }, 1500); // 1.5 saniye sonra yönlendir
+      }, 1500);
     } else {
       setLoading(false);
       showToast("error", "Giriş başarısız. Lütfen bilgilerinizi kontrol edin.");
@@ -75,7 +73,6 @@ const Login = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      {/* Eğer loading aktifse, tüm ekranı kaplayan animasyonlu ikon göster */}
       {loading ? (
         <Box
         sx={{
@@ -169,7 +166,6 @@ const Login = () => {
         </Box>
       )}
 
-      {/* Snackbar Toast Bildirimleri */}
       <ToastNotification
         open={toast.open}
         severity={toast.severity}

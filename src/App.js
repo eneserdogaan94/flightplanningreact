@@ -21,15 +21,11 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/user-home" element={<PrivateRoute element={<UserHome />} allowedRoles={["USER"]} />} />
-
-          {/* 🔥 Admin Paneli için Nested Route */}
           <Route path="/admin-home" element={<PrivateRoute element={<AdminDashboard />} allowedRoles={["ADMIN"]} />}>
-            <Route index element={<Navigate to="flights" />} /> {/* 🏆 Eğer "/admin-home" girilirse "/flights" göster */}
+            <Route index element={<Navigate to="flights" />} />
             <Route path="flights" element={<FlightList />} />
             <Route path="add-flight" element={<AddFlight />} />
           </Route>
-
-          {/* 🌟 Eğer giriş yapılmışsa doğru sayfaya yönlendir */}
           <Route path="/" element={<Navigate to="/admin-home/flights" />} />
         </Routes>
       </Router>

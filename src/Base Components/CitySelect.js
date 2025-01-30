@@ -14,13 +14,13 @@ const CitySelect = ({ onCityChange }) => {
 
   const handleChange = (event, newValue) => {
     setSelectedCity(newValue);
-    setError(false); // Şehir seçildiğinde hata mesajını sıfırla
+    setError(false);
     if (onCityChange) onCityChange(newValue);
   };
 
   const handleBlur = () => {
     if (!selectedCity) {
-      setError(true); // Şehir seçilmemişse hata mesajını göster
+      setError(true);
     }
   };
 
@@ -29,14 +29,14 @@ const CitySelect = ({ onCityChange }) => {
         options={cities}
         value={selectedCity}
         onChange={handleChange}
-        onBlur={handleBlur} // Bileşen dışına tıklandığında kontrol et
+        onBlur={handleBlur}
         renderInput={(params) => (
           <TextField
             {...params}
             label="Şehir"
             placeholder="Search city"
-            error={error} // Hata durumunu TextField'a ilet
-            helperText={error ? "Şehir seçilmesi zorunludur." : ""} // Hata mesajı
+            error={error}
+            helperText={error ? "Şehir seçilmesi zorunludur." : ""}
           />
         )}
       />

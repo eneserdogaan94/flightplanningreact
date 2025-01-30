@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import ToastNotification from "../../Base Components/ToastNotification";
+
 import {
   Box,
   Typography,
@@ -21,10 +23,19 @@ const AddFlight = () => {
   const [arrivalAirport, setArrivalAirport] = useState("");
   const [departureTime, setDepartureTime] = useState("");
   const [arrivalTime, setArrivalTime] = useState("");
+  const [toast, setToast] = useState({ open: false, severity: "info", message: "" });
 
   useEffect(() => {
     fetchAirports();
   }, []);
+
+  const showToast = (severity, message) => {
+    setToast({ open: true, severity, message });
+
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, open: false }));
+    }, 5000);
+  };
 
   const fetchAirports = async () => {
     try {
@@ -32,6 +43,7 @@ const AddFlight = () => {
       setAirports(response.data);
     } catch (error) {
       console.error("Error fetching airports:", error);
+      showToast("error", "Havalimanları yüklenirken bir hata oluştu.");
     }
   };
 
@@ -44,21 +56,25 @@ const AddFlight = () => {
         departureTime,
         arrivalTime,
       };
-  
-      const token = localStorage.getItem("token"); // Token'ı localStorage'dan al
-  
+
+      const token = localStorage.getItem("token");
+
       await axios.post("/api/flights/saveFlight", flightData, {
         headers: {
-          Authorization: `Bearer ${token}`, // Yetkilendirme başlığını ekle
+          Authorization: `Bearer ${token}`,
         },
       });
-  
-      navigate("/admin-home/flights");
+
+      showToast("success", "Uçuş başarıyla kaydedildi!");
+      
+      setTimeout(() => {
+        navigate("/admin-home/flights");
+      }, 1500);
     } catch (error) {
       console.error("Error saving flight:", error);
+      showToast("error", "Uçuş eklenirken bir hata oluştu.");
     }
   };
-  
 
   return (
     <Box
@@ -72,7 +88,6 @@ const AddFlight = () => {
         borderRadius: 2,
       }}
     >
-      {/* Bilgilendirici Kutu */}
       <Alert severity="info" sx={{ mb: 2 }}>
         <strong>Uçuş planlaması yapılırken dikkate alınması gereken kurallar:</strong>
         <ul style={{ margin: 0, paddingLeft: "20px" }}>
@@ -86,7 +101,6 @@ const AddFlight = () => {
       </Typography>
 
       <form onSubmit={handleSubmit}>
-        {/* Departure Select */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Kalkış Havalimanı</InputLabel>
           <Select
@@ -102,7 +116,6 @@ const AddFlight = () => {
           </Select>
         </FormControl>
 
-        {/* Arrival Select */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Varış Havalimanı</InputLabel>
           <Select
@@ -118,7 +131,6 @@ const AddFlight = () => {
           </Select>
         </FormControl>
 
-        {/* Departure Time */}
         <TextField
           label="Kalkış Saati"
           type="datetime-local"
@@ -130,7 +142,6 @@ const AddFlight = () => {
           required
         />
 
-        {/* Arrival Time */}
         <TextField
           label="Varış Saati"
           type="datetime-local"
@@ -142,11 +153,18 @@ const AddFlight = () => {
           required
         />
 
-        {/* Submit Button */}
         <Button variant="contained" color="primary" fullWidth type="submit">
           Uçuşu Kaydet
         </Button>
       </form>
+
+      {/* Snackbar Bildirimleri */}
+      <ToastNotification
+        open={toast.open}
+        severity={toast.severity}
+        message={toast.message}
+        onClose={() => setToast({ ...toast, open: false })}
+      />
     </Box>
   );
 };

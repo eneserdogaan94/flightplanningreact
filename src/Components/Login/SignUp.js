@@ -10,8 +10,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import ToastNotification from "../../Base Components/ToastNotification";
-
-// Base Components
 import Input from "../../Base Components/Input";
 import Button from "../../Base Components/Button";
 import CitySelect from "../../Base Components/CitySelect";
@@ -155,7 +153,6 @@ const SignUp = () => {
         </Box>
       </Box>
 
-      {/* Toast Notification */}
       <ToastNotification
         open={toast.open}
         severity={toast.severity}

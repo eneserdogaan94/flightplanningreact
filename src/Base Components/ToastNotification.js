@@ -5,9 +5,9 @@ const ToastNotification = ({ open, severity, message, onClose }) => {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={5000} // 5 saniye sonra kaybolur
+      autoHideDuration={5000}
       onClose={onClose}
-      anchorOrigin={{ vertical: "bottom", horizontal: "right" }} // Sağ alt köşe
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
     >
       <Alert onClose={onClose} severity={severity} sx={{ width: "100%" }}>
         {message}

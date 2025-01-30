@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { AppProvider } from "@toolpad/core/AppProvider";
+import ToastNotification from "../../Base Components/ToastNotification";
 
-// MUI bileşenleri
 import {
   Box,
   Typography,
@@ -18,7 +18,6 @@ import FlightIcon from "@mui/icons-material/Flight";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-// Görsel (Logo)
 import AirplaneTicketIcon from "../../Images/aircraft-airplane-airline-logo-or-label-journey-vector-21441986.jpg";
 
 const AdminDashboard = () => {
@@ -29,32 +28,52 @@ const AdminDashboard = () => {
 
   const [currentPath, setCurrentPath] = useState(location.pathname);
   const [bottomNavValue, setBottomNavValue] = useState(0);
+  const [toast, setToast] = useState({ open: false, severity: "info", message: "" });
 
   useEffect(() => {
     setCurrentPath(location.pathname);
+
+    
+    if (location.pathname === "/admin-home") {
+      showToast("success", "Hoş geldiniz, Admin!");
+    }
   }, [location.pathname]);
 
-  const handleLogout = () => {
-    logout(() => navigate("/login"));
+  const showToast = (severity, message) => {
+    setToast({ open: true, severity, message });
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, open: false }));
+    }, 5000);
   };
 
-  // Alttaki BottomNavigation itemları
+  const handleLogout = () => {
+    showToast("info", "Başarıyla çıkış yapıldı.");
+    setTimeout(() => {
+      logout(() => navigate("/login"));
+    }, 1500);
+  };
+
   const bottomNavItems = [
     {
       label: "Uçuş Listesi",
       icon: <FlightIcon />,
-      onClick: () => navigate("/admin-home/flights"),
+      onClick: () => {
+        navigate("/admin-home/flights");
+        showToast("info", "Uçuş listesine yönlendiriliyorsunuz...");
+      },
     },
     {
       label: "Uçuş Ekle",
       icon: <AddCircleOutlineIcon />,
-      onClick: () => navigate("/admin-home/add-flight"),
+      onClick: () => {
+        navigate("/admin-home/add-flight");
+        showToast("info", "Yeni uçuş ekleme sayfasına yönlendiriliyorsunuz...");
+      },
     },
   ];
 
   return (
-    <AppProvider
-    >
+    <AppProvider>
       <Box
         sx={{
           display: "flex",
@@ -63,7 +82,6 @@ const AdminDashboard = () => {
         }}
         key={currentPath}
       >
-        
         <Box
           sx={{
             display: "flex",
@@ -119,14 +137,17 @@ const AdminDashboard = () => {
             }}
           >
             {bottomNavItems.map((item, index) => (
-              <BottomNavigationAction
-                key={index}
-                label={item.label}
-                icon={item.icon}
-              />
+              <BottomNavigationAction key={index} label={item.label} icon={item.icon} />
             ))}
           </BottomNavigation>
         </Paper>
+
+        <ToastNotification
+          open={toast.open}
+          severity={toast.severity}
+          message={toast.message}
+          onClose={() => setToast({ ...toast, open: false })}
+        />
       </Box>
     </AppProvider>
   );

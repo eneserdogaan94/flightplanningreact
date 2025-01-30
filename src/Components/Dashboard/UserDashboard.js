@@ -2,10 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import ToastNotification from "../../Base Components/ToastNotification"; // Bileşeni içe aktar
+import ToastNotification from "../../Base Components/ToastNotification";
 
-
-// MUI & Toolpad
 import { AppProvider } from "@toolpad/core/AppProvider";
 import {
   Box,
@@ -19,15 +17,15 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Button,
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
 
-// Custom Components
-import Button from "../../Base Components/Button";
 import Input from "../../Base Components/Input";
 
-// Logo
 import AirplaneTicketIcon from "../../Images/aircraft-airplane-airline-logo-or-label-journey-vector-21441986.jpg";
+import { CancelScheduleSend, CancelScheduleSendOutlined } from "@mui/icons-material";
 
 const UserDashboard = () => {
   const { user, logout } = useContext(AuthContext);
@@ -41,14 +39,20 @@ const UserDashboard = () => {
     arrival: "",
     date: "",
   });
+
   const showToast = (severity, message) => {
     setToast({ open: true, severity, message });
+
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, open: false }));
+    }, 5000);
   };
 
   useEffect(() => {
     if (!user) {
       navigate("/login");
     } else {
+      showToast("success", `Hoş geldiniz, ${user.username}!`);
       fetchFlights();
     }
   }, [user, navigate]);
@@ -63,6 +67,7 @@ const UserDashboard = () => {
       setFilteredFlights(response.data);
     } catch (error) {
       console.error("Error fetching flights:", error);
+      showToast("error", "Uçuşlar yüklenirken bir hata oluştu.");
     }
   };
 
@@ -89,8 +94,18 @@ const UserDashboard = () => {
     setFilteredFlights(filtered);
   };
 
+  const handleClearFilters = () => {
+    setFilter({ departure: "", arrival: "", date: "" });
+    setFilteredFlights(flights);
+  };
+
   const handleLogout = () => {
-    logout(() => navigate("/login"));
+    logout(() => {
+      showToast("info", "Başarıyla çıkış yapıldı.");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    });
   };
 
   return (
@@ -124,7 +139,7 @@ const UserDashboard = () => {
             </Typography>
           </Box>
 
-          <IconButton onClick={handleLogout} color="error">
+          <IconButton onClick={handleLogout}>
             <LogoutIcon />
           </IconButton>
         </Box>
@@ -134,27 +149,37 @@ const UserDashboard = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            minHeight: "100vh", // tam ekran yüksekliği
+            minHeight: "100vh",
           }}
         >
           <h2>Uçuş Listesi</h2>
-          <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+          <div style={{ display: "flex", gap: "10px", marginBottom: "20px", alignItems: "center" }}>
             <Input
               name="departure"
               label="Kalkış Şehri"
+              value={filter.departure}
               onChange={handleFilterChange}
             />
             <Input
               name="arrival"
               label="Varış Şehri"
+              value={filter.arrival}
               onChange={handleFilterChange}
             />
             <Input
               name="date"
               label=""
               type="date"
+              value={filter.date}
               onChange={handleFilterChange}
             />
+
+            {/* Temizle Butonu (Küçük) */}
+            <IconButton
+              onClick={handleClearFilters}
+            >
+              <CancelScheduleSendOutlined />
+            </IconButton>
           </div>
           <TableContainer component={Paper}>
             <Table>
@@ -167,35 +192,27 @@ const UserDashboard = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredFlights.length > 0 ? (
-                  filteredFlights.map((flight) => (
-                    <TableRow key={flight.id}>
-                      <TableCell>
-                        {flight.departureAirport?.city || "Unknown"}
-                      </TableCell>
-                      <TableCell>
-                        {flight.arrivalAirport?.city || "Unknown"}
-                      </TableCell>
-                      <TableCell>
-                        {flight.departureTime
-                          ? new Date(flight.departureTime).toLocaleString()
-                          : "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        {flight.arrivalTime
-                          ? new Date(flight.arrivalTime).toLocaleString()
-                          : "N/A"}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} align="center">
-                      Uçuş bulunmamaktadır.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
+  {filteredFlights.length > 0 ? (
+    filteredFlights.map((flight) => (
+      <TableRow key={flight.id}>
+        <TableCell>{flight.departureAirport?.city || "Unknown"}</TableCell>
+        <TableCell>{flight.arrivalAirport?.city || "Unknown"}</TableCell>
+        <TableCell>
+          {flight.departureTime ? new Date(flight.departureTime).toLocaleString() : "N/A"}
+        </TableCell>
+        <TableCell>
+          {flight.arrivalTime ? new Date(flight.arrivalTime).toLocaleString() : "N/A"}
+        </TableCell>
+      </TableRow>
+    ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={4} align="center">
+        Uçuş bulunmamaktadır.
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
             </Table>
           </TableContainer>
           <ToastNotification
@@ -204,7 +221,6 @@ const UserDashboard = () => {
             message={toast.message}
             onClose={() => setToast({ ...toast, open: false })}
           />
-         
         </Box>
       </Box>
     </AppProvider>
