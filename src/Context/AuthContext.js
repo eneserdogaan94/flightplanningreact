@@ -10,9 +10,19 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token && role) {
-      setUser({ role }); // Eğer token varsa ve role localStorage'dan geliyorsa user bilgisini set et
+      setUser({ role });
     }
   }, [token, role]);
+
+  const signup = async (userData) => {
+    try {
+      const response = await axios.post("/api/users/signup", userData);
+      return response.data; 
+    } catch (error) {
+      console.error("Signup failed:", error);
+      return null;
+    }
+  };
 
   const login = async (username, password) => {
     try {
@@ -43,7 +53,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, role, token, login, logout }}>
+    <AuthContext.Provider value={{ user, role, token, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

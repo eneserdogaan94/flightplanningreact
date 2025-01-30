@@ -27,9 +27,7 @@ const AdminDashboard = () => {
   const location = useLocation();
   const theme = useTheme();
 
-  // URL değiştiğinde layout’un tekrar renderlanması için
   const [currentPath, setCurrentPath] = useState(location.pathname);
-  // BottomNavigation seçili tab
   const [bottomNavValue, setBottomNavValue] = useState(0);
 
   useEffect(() => {
@@ -56,40 +54,16 @@ const AdminDashboard = () => {
 
   return (
     <AppProvider
-      /*
-        navigation prop’unu vermeyerek veya boş dizi vererek
-        Toolpad’in sol menüsünü devre dışı bırakabilirsiniz.
-        Örn: navigation={[]}
-      */
-      // navigation={[]} 
-      
-      // Eğer Toolpad branding özelliğini kullanmak isterseniz buraya ekleyebilirsiniz.
-      // Ama "eskiden eklediğiniz header" zaten logo içerdiği için ek branding'e gerek yok.
-      // branding={{
-      //   logo: (
-      //     <img
-      //       src={AirplaneTicketIcon}
-      //       alt="Flight Logo"
-      //       style={{ height: 40, objectFit: "contain" }}
-      //     />
-      //   ),
-      //   title: "Flight Planning App",
-      //   homeUrl: "/admin-home/flights",
-      // }}
     >
-      {/* Tüm ekranı kaplayacak kendi layout’umuz */}
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          minHeight: "100vh", // tam ekran yüksekliği
+          minHeight: "100vh",
         }}
         key={currentPath}
       >
-        {/* 
-          ESKİDEN EKLEDİĞİNİZ HEADER (Logo + "Admin Dashboard" + Logout Butonu)
-          AppBar yerine basit bir Box ile üst kısım.
-        */}
+        
         <Box
           sx={{
             display: "flex",
@@ -99,7 +73,6 @@ const AdminDashboard = () => {
             borderBottom: "1px solid #ddd",
           }}
         >
-          {/* Solda Logo + Başlık */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <img
               src={AirplaneTicketIcon}
@@ -111,13 +84,11 @@ const AdminDashboard = () => {
             </Typography>
           </Box>
 
-          {/* Sağda Logout Butonu */}
           <IconButton onClick={handleLogout} color="error">
             <LogoutIcon />
           </IconButton>
         </Box>
 
-        {/* İÇERİK (NESTED ROUTES) */}
         <Box
           component="main"
           sx={{
@@ -129,7 +100,6 @@ const AdminDashboard = () => {
           <Outlet />
         </Box>
 
-        {/* ALT KISIM (BOTTOM NAVIGATION) */}
         <Paper
           elevation={3}
           sx={{
@@ -145,7 +115,6 @@ const AdminDashboard = () => {
             value={bottomNavValue}
             onChange={(_, newValue) => {
               setBottomNavValue(newValue);
-              // İlgili rota yönlendirmesi
               bottomNavItems[newValue]?.onClick?.();
             }}
           >

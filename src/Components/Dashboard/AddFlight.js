@@ -1,56 +1,153 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Typography } from "@mui/material";
-import Button from "../../Base Components/Button";
-import Input from "../../Base Components/Input";
+import {
+  Box,
+  Typography,
+  Button,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  TextField,
+  Paper,
+  Alert,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const AddFlight = () => {
-  const [newFlight, setNewFlight] = useState({
-    departureAirportId: "",
-    arrivalAirportId: "",
-    departureTime: "",
-    arrivalTime: "",
-  });
+  const navigate = useNavigate();
+  const [airports, setAirports] = useState([]);
+  const [departureAirport, setDepartureAirport] = useState("");
+  const [arrivalAirport, setArrivalAirport] = useState("");
+  const [departureTime, setDepartureTime] = useState("");
+  const [arrivalTime, setArrivalTime] = useState("");
 
-  const handleAddFlight = async () => {
+  useEffect(() => {
+    fetchAirports();
+  }, []);
+
+  const fetchAirports = async () => {
     try {
-      const token = localStorage.getItem("token");
-      await axios.post("/api/flights", newFlight, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      alert("Flight added successfully!");
+      const response = await axios.get("/api/airports");
+      setAirports(response.data);
     } catch (error) {
-      console.error("Error adding flight:", error);
+      console.error("Error fetching airports:", error);
     }
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const flightData = {
+        departureAirportId: departureAirport,
+        arrivalAirportId: arrivalAirport,
+        departureTime,
+        arrivalTime,
+      };
+  
+      const token = localStorage.getItem("token"); // Token'ı localStorage'dan al
+  
+      await axios.post("/api/flights/saveFlight", flightData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Yetkilendirme başlığını ekle
+        },
+      });
+  
+      navigate("/admin-home/flights");
+    } catch (error) {
+      console.error("Error saving flight:", error);
+    }
+  };
+  
+
   return (
-    <>
-      <Typography variant="h6" sx={{ marginTop: "20px" }}>Add New Flight</Typography>
-      <Box sx={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <Input
-          name="departureAirportId"
-          label="Departure Airport ID"
-          onChange={(e) => setNewFlight({ ...newFlight, departureAirportId: e.target.value })}
-        />
-        <Input
-          name="arrivalAirportId"
-          label="Arrival Airport ID"
-          onChange={(e) => setNewFlight({ ...newFlight, arrivalAirportId: e.target.value })}
-        />
-        <Input
-          name="departureTime"
+    <Box
+      sx={{
+        maxWidth: "600px",
+        margin: "auto",
+        mt: 4,
+        p: 3,
+        backgroundColor: "white",
+        boxShadow: 3,
+        borderRadius: 2,
+      }}
+    >
+      {/* Bilgilendirici Kutu */}
+      <Alert severity="info" sx={{ mb: 2 }}>
+        <strong>Uçuş planlaması yapılırken dikkate alınması gereken kurallar:</strong>
+        <ul style={{ margin: 0, paddingLeft: "20px" }}>
+          <li>Bir uçuşun iniş veya kalkış yaptığı hava sahasında, uçak 30 dakika boyunca başka bir iniş veya kalkış yapamaz.</li>
+          <li>Aynı şehirden yapılan uçuşların 30 dakikalık bu süre içinde birbirleriyle çakışmaması gerekir.</li>
+        </ul>
+      </Alert>
+
+      <Typography variant="h5" sx={{ textAlign: "center", mb: 2 }}>
+        Yeni Uçuş Ekle
+      </Typography>
+
+      <form onSubmit={handleSubmit}>
+        {/* Departure Select */}
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel>Departure Airport</InputLabel>
+          <Select
+            value={departureAirport}
+            onChange={(e) => setDepartureAirport(e.target.value)}
+            required
+          >
+            {airports.map((airport) => (
+              <MenuItem key={airport.id} value={airport.id}>
+                {airport.city} - {airport.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Arrival Select */}
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel>Arrival Airport</InputLabel>
+          <Select
+            value={arrivalAirport}
+            onChange={(e) => setArrivalAirport(e.target.value)}
+            required
+          >
+            {airports.map((airport) => (
+              <MenuItem key={airport.id} value={airport.id}>
+                {airport.city} - {airport.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Departure Time */}
+        <TextField
+          label="Departure Time"
           type="datetime-local"
-          onChange={(e) => setNewFlight({ ...newFlight, departureTime: e.target.value })}
+          fullWidth
+          value={departureTime}
+          onChange={(e) => setDepartureTime(e.target.value)}
+          sx={{ mb: 2 }}
+          InputLabelProps={{ shrink: true }}
+          required
         />
-        <Input
-          name="arrivalTime"
+
+        {/* Arrival Time */}
+        <TextField
+          label="Arrival Time"
           type="datetime-local"
-          onChange={(e) => setNewFlight({ ...newFlight, arrivalTime: e.target.value })}
+          fullWidth
+          value={arrivalTime}
+          onChange={(e) => setArrivalTime(e.target.value)}
+          sx={{ mb: 2 }}
+          InputLabelProps={{ shrink: true }}
+          required
         />
-        <Button text="Add Flight" onClick={handleAddFlight} />
-      </Box>
-    </>
+
+        {/* Submit Button */}
+        <Button variant="contained" color="primary" fullWidth type="submit">
+          Uçuşu Kaydet
+        </Button>
+      </form>
+    </Box>
   );
 };
 

@@ -24,7 +24,7 @@ const Login = () => {
 
   const handleChange = (name, value) => {
     setCredentials((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); // Alan değişince hatayı temizle
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const validate = () => {
@@ -40,7 +40,6 @@ const Login = () => {
     if (!validate()) return;
   
     const user = await login(credentials.username, credentials.password);
-    // Artık user bir nesne ve içinde role değeri var (örneğin { role: 'ADMIN' })
   
     if (user) {
       if (user.role === "ADMIN") {
