@@ -44,11 +44,11 @@ const SignUp = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.firstName) newErrors.firstName = "First name is required.";
-    if (!formData.lastName) newErrors.lastName = "Last name is required.";
-    if (!formData.city) newErrors.city = "City is required.";
-    if (!formData.username) newErrors.username = "Username is required.";
-    if (!formData.password) newErrors.password = "Password is required.";
+    if (!formData.firstName) newErrors.firstName = "Lütfen adınızı giriniz.";
+    if (!formData.lastName) newErrors.lastName = "Lütfen soyadınızı giriniz.";
+    if (!formData.city) newErrors.city = "Lütfen şehrinizi seçiniz.";
+    if (!formData.username) newErrors.username = "Lütfen kullanıcı adınızı giriniz.";
+    if (!formData.password) newErrors.password = "Lütfen parolanızı giriniz.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
