@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ToastNotification from "../../Base Components/ToastNotification";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import {
+  Alert,
   Box,
   Typography,
   IconButton,
@@ -137,7 +138,7 @@ const UserDashboard = () => {
         <Box className="user-dashboard-header">
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <img src={AirplaneTicketIcon} alt="Flight Logo" />
-            <Typography variant="h6">Kullanıcı Dashboard</Typography>
+            <Typography variant="h6">Uçuş Takip Programı</Typography>
           </Box>
           <IconButton className="user-dashboard-logout" onClick={handleLogout}>
             <LogoutIcon />
@@ -147,7 +148,14 @@ const UserDashboard = () => {
         {/* 📌 **İçerik** */}
         <Box className="user-dashboard-content">
           <Typography variant="h5">Uçuş Listesi</Typography>
-
+<Alert severity="info">
+          <strong>Uçuş Renk Kodları:</strong>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            <li><span style={{ color: "red", fontWeight: "bold" }}>Kırmızı</span>: Geçmiş tarihli uçuşlar</li>
+            <li><span style={{ color: "orange", fontWeight: "bold" }}>Turuncu</span>: 3 gün içinde olan uçuşlar</li>
+            <li><span style={{ color: "blue", fontWeight: "bold" }}>Mavi</span>: 3 günden daha ileri tarihli uçuşlar</li>
+          </ul>
+        </Alert>
           {/* 📌 **Filtreleme Alanı** */}
           <Box className="user-dashboard-filters">
             <Input name="departure" label="Kalkış Şehri" value={filter.departure} onChange={handleFilterChange} />

@@ -23,16 +23,18 @@
   
   /* 📌 Renkli Satır Yazıları */
   .flight-red {
-    color: red;
-    font-weight: bold;
+    color: red !important;
+    font-weight: bold !important;
   }
+  
   .flight-orange {
-    color: orange;
-    font-weight: bold;
+    color: orange !important;
+    font-weight: bold !important;
   }
+  
   .flight-blue {
-    color: blue;
-    font-weight: bold;
+    color: blue !important;
+    font-weight: bold !important;
   }
   
   /* 📌 Tablo Satırları */
