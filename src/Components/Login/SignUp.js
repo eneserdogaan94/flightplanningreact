@@ -144,11 +144,11 @@ const SignUp = () => {
             error={!!errors.password}
             helperText={errors.password}
           />
-          <Button type="submit" text="Sign Up" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} />
+          <Button type="submit" text="Kaydol" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} />
           <Grid container>
             <Grid item>
               <Link href="/login" variant="body2">
-                {"Daha önce kayıt oldunuz mu?"}
+                {"Hesabın zaten var mı??"}
               </Link>
             </Grid>
           </Grid>

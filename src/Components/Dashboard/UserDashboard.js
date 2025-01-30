@@ -70,7 +70,6 @@ const UserDashboard = () => {
     const { name, value } = event.target;
     setFilter((prev) => ({ ...prev, [name]: value }));
 
-    // Apply filter immediately upon change
     const filtered = flights.filter((flight) => {
       return (
         (name !== "departure" ||

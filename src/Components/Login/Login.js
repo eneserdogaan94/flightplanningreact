@@ -68,7 +68,7 @@ const Login = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Giriş
         </Typography>
         {generalError && (
           <Alert severity="error" sx={{ width: "100%", mt: 2 }}>
@@ -80,7 +80,7 @@ const Login = () => {
             required
             fullWidth
             id="username"
-            label="Username"
+            label="Kullanıcı Adı"
             name="username"
             value={credentials.username || ""}
             onChange={(e) => handleChange(e.target.name, e.target.value)}
@@ -91,7 +91,7 @@ const Login = () => {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Parola"
             type="password"
             id="password"
             value={credentials.password || ""}
@@ -99,14 +99,14 @@ const Login = () => {
             error={!!errors.password}
             helperText={errors.password}
           />
-          <Checkbox label="Remember me" />
+          <Checkbox label="Beni Hatırla" />
 
-          <Button type="submit" text="Sign In" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} />
+          <Button type="submit" text="Giriş Yap" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} />
 
           <Grid container>
             <Grid item>
               <Link href="/signup" variant="body2">
-                {"Don't have an account? Sign Up"}
+                {"Hesabın yok mu? Kaydol!"}
               </Link>
             </Grid>
           </Grid>
