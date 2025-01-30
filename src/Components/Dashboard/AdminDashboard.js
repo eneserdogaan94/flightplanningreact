@@ -23,7 +23,7 @@ import AirplaneTicketIcon from "../../Images/aircraft-airplane-airline-logo-or-l
 import "../../styles/AdminDashboard.css"; // 📌 **Yeni Eklenen CSS Dosyası**
 
 const AdminDashboard = () => {
-  const { logout } = useContext(AuthContext);
+  const { token,logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -39,6 +39,12 @@ const AdminDashboard = () => {
       showToast("success", "Hoş geldiniz, Admin!");
     }
   }, [location.pathname]);
+    useEffect(() => {
+      if (!token) {
+        showToast("info", "Oturum süresi dolmuştur.Lütfen tekrar giriş yapınız.");
+        logout(() => navigate("/login"));
+      }
+    }, [token, navigate]);
 
   const showToast = (severity, message) => {
     setToast({ open: true, severity, message });

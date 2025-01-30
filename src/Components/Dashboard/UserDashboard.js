@@ -25,7 +25,7 @@ import AirplaneTicketIcon from "../../Images/aircraft-airplane-airline-logo-or-l
 import "../../styles/UserDashboard.css"; // 📌 CSS dosyası eklendi.
 
 const UserDashboard = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [toast, setToast] = useState({ open: false, severity: "info", message: "" });
   const [flights, setFlights] = useState([]);
@@ -38,15 +38,16 @@ const UserDashboard = () => {
 
   // **Pagination (Sayfalama) için State**
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
-    if (!user) {
+    if (!token) {
+      showToast("info", "Oturum süresi dolmuştur.Lütfen tekrar giriş yapınız.");
       navigate("/login");
     } else {
       fetchFlights();
     }
-  }, [user, navigate]);
+  }, [token, navigate]);
 
   const fetchFlights = async () => {
     try {
