@@ -3,9 +3,9 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 
-// 81 il olarak kaydetmedim çok fazla örnekleme olmasın diye.
 const cities = [
-  "İstanbul","Ankara","İzmir","Antalya","Trabzon"
+  "İstanbul", "Ankara", "İzmir", "Antalya", "Trabzon",
+  "Bursa", "Adana", "Gaziantep", "Diyarbakır", "Erzurum"
 ];
 
 const CitySelect = ({ onCityChange }) => {
