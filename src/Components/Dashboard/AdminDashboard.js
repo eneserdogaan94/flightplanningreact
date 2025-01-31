@@ -86,7 +86,6 @@ const AdminDashboard = () => {
   return (
     <AppProvider>
       <Box className="admin-dashboard">
-        {/* 📌 **Header Alanı** */}
         <Box className="admin-dashboard-header">
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <img src={AirplaneTicketIcon} alt="Flight Logo" />
@@ -98,12 +97,10 @@ const AdminDashboard = () => {
           </IconButton>
         </Box>
 
-        {/* 📌 **İçerik Alanı** */}
         <Box className="admin-dashboard-content">
           <Outlet />
         </Box>
 
-        {/* 📌 **Bottom Navigation** */}
         <Paper className="admin-dashboard-bottom-nav" elevation={3}>
           <BottomNavigation
             showLabels
@@ -119,7 +116,6 @@ const AdminDashboard = () => {
           </BottomNavigation>
         </Paper>
 
-        {/* 📌 **Toast Notification** */}
         <Box className="admin-dashboard-toast">
           <ToastNotification
             open={toast.open}

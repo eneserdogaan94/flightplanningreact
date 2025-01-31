@@ -146,7 +146,6 @@ const UserDashboard = () => {
   return (
     <AppProvider>
       <Box className="user-dashboard">
-        {/* 📌 **Header** */}
         <Box className="user-dashboard-header">
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <img src={AirplaneTicketIcon} alt="Flight Logo" />
@@ -157,7 +156,6 @@ const UserDashboard = () => {
           </IconButton>
         </Box>
 
-        {/* 📌 **İçerik** */}
         <Box className="user-dashboard-content">
           <Typography variant="h5">Uçuş Listesi</Typography>
 <Alert severity="info">
@@ -168,19 +166,16 @@ const UserDashboard = () => {
             <li><span style={{ color: "blue", fontWeight: "bold" }}>Mavi</span>: 3 günden daha ileri tarihli uçuşlar</li>
           </ul>
         </Alert>
-          {/* 📌 **Filtreleme Alanı** */}
           <Box className="user-dashboard-filters">
             <Input name="departure" label="Kalkış Şehri" value={filter.departure} onChange={handleFilterChange} />
             <Input name="arrival" label="Varış Şehri" value={filter.arrival} onChange={handleFilterChange} />
             <Input name="date" label="" type="date" value={filter.date} onChange={handleFilterChange} />
 
-            {/* 📌 **Temizle Butonu** */}
             <IconButton className="user-dashboard-clear-btn" onClick={handleClearFilters}>
               <CancelScheduleSendOutlined />
             </IconButton>
           </Box>
 
-          {/* 📌 **Uçuş Listesi + Pagination** */}
           <TableContainer component={Paper} className="user-dashboard-table">
             <Table>
               <TableHead>
@@ -211,7 +206,6 @@ const UserDashboard = () => {
             </Table>
           </TableContainer>
 
-          {/* 📌 **Pagination** */}
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"

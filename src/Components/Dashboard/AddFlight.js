@@ -212,7 +212,6 @@ const handleSubmit = async (event) => {
         </Button>
       </form>
 
-      {/* Snackbar Bildirimleri */}
       <ToastNotification
         open={toast.open}
         severity={toast.severity}
