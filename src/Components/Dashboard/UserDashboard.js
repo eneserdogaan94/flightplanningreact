@@ -22,7 +22,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import CancelScheduleSendOutlined from "@mui/icons-material/CancelScheduleSendOutlined";
 import Input from "../../Base Components/Input";
 import AirplaneTicketIcon from "../../Images/aircraft-airplane-airline-logo-or-label-journey-vector-21441986.jpg";
-import "../../styles/UserDashboard.css"; // 📌 CSS dosyası eklendi.
+import "../../styles/UserDashboard.css"; 
 
 const UserDashboard = () => {
   const { token, logout } = useContext(AuthContext);
@@ -35,8 +35,6 @@ const UserDashboard = () => {
     arrival: "",
     date: "",
   });
-
-  // **Pagination (Sayfalama) için State**
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -49,19 +47,33 @@ const UserDashboard = () => {
     }
   }, [token, navigate]);
 
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const fetchFlights = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("/api/flights/searchById", {
-        headers: { Authorization: `Bearer ${token}` },
+  
+      const response = await axios.get(`${API_URL}/api/flights/searchById`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true, 
       });
+  
       setFlights(response.data);
       setFilteredFlights(response.data);
+  
     } catch (error) {
-      console.error("Error fetching flights:", error);
-      showToast("error", "Uçuşlar yüklenirken bir hata oluştu.");
+      console.error("Uçuşlar yüklenirken hata oluştu:", error);
+  
+      const errorMessage =
+        error.response?.data?.message || "Uçuşlar yüklenirken bir hata oluştu.";
+  
+      showToast("error", errorMessage);
     }
   };
+  
 
   const showToast = (severity, message) => {
     setToast({ open: true, severity, message });
@@ -107,22 +119,21 @@ const UserDashboard = () => {
     });
   };
 
-  // 📌 **Tablo Renklendirme Fonksiyonu**
+ 
   const getTextColor = (departureTime) => {
     const now = new Date();
     const flightDate = new Date(departureTime);
     const diffInDays = Math.floor((flightDate - now) / (1000 * 60 * 60 * 24));
 
     if (flightDate < now) {
-      return "red"; // Geçmiş uçuşlar
+      return "red"; 
     } else if (diffInDays <= 3) {
-      return "orange"; // Yakın tarihli uçuşlar
+      return "orange"; 
     } else {
-      return "blue"; // Uzak tarihli uçuşlar
+      return "blue"; 
     }
   };
 
-  // 📌 **Sayfalama için event handler**
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };

@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(localStorage.getItem("role") || null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-
+  const API_URL = process.env.REACT_APP_API_URL;
   useEffect(() => {
     if (token && role) {
       setUser({ role });
@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (userData) => {
     try {
-      const response = await axios.post("/api/users/signup", userData);
+      const response = await axios.post(`${API_URL}/api/users/signup`, userData);
       return response.data; 
     } catch (error) {
       console.error("Signup failed:", error);
@@ -26,7 +26,17 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await axios.post("/api/auth/login", { username, password });
+      const response = await axios.post(
+        `${API_URL}/api/auth/login`,
+        { username, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+  
       const { token, role } = response.data;
   
       setUser({ role });
@@ -38,8 +48,13 @@ export const AuthProvider = ({ children }) => {
   
       return { role };
     } catch (error) {
-      console.error("Login failed:", error);
-      return null; 
+      console.error("Login hatası:", error);
+  
+      if (error.response) {
+        throw new Error(error.response.data.message || "Giriş başarısız!");
+      } else {
+        throw new Error("Sunucuya bağlanılamadı!");
+      }
     }
   };
 

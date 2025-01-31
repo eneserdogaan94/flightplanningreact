@@ -3,7 +3,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 
-// 81 il olarak kaydetmedim o kadar örnek olmasın diye.
+// 81 il olarak kaydetmedim çok fazla örnekleme olmasın diye.
 const cities = [
   "İstanbul","Ankara","İzmir","Antalya","Trabzon"
 ];

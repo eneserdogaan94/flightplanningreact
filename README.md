@@ -1,70 +1,67 @@
-# Getting Started with Create React App
+# ✈️ Flight Planning React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Bu proje, **uçuş planlama ve yönetimi** amacıyla geliştirilmiş bir **React** uygulamasıdır.  
+Kullanıcılar ve yöneticiler, uçuşları listeleyebilir, filtreleyebilir ve yönetebilir.  
 
-## Available Scripts
+🚀 **Admin** kullanıcıları uçuş ekleyebilir ve listeleyebilir.  
+👤 **Kullanıcılar** kendilerine uygun uçuşları filtreleyerek görüntüleyebilir.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 📌 **Özellikler**
+- 🔐 **Yetkilendirme & Kimlik Doğrulama**
+  - Kullanıcı ve Admin giriş yapabilir.
+  - Yetkilendirme **JWT Token** ile sağlanır.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- ✈️ **Uçuş Yönetimi**
+  - Uçuşları listeleme, detayları görüntüleme.
+  - **Filtreleme:** Kalkış şehri, varış şehri ve tarih bazlı dinamik filtreleme.
+  - **Renk Kodları:** 
+    - **🔴 Kırmızı:** Geçmiş uçuşlar
+    - **🟠 Turuncu:** Yaklaşan uçuşlar (3 gün içinde)
+    - **🔵 Mavi:** 3 günden sonraki uçuşlar
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- 🎛 **Admin Paneli**
+  - Adminler yeni uçuş ekleyebilir.
+  - **30 dakikalık kural** kontrol edilir (aynı şehirde çakışan uçuşlar engellenir).
 
-### `npm test`
+- ⚡ **Pagination & Responsive Tasarım**
+  - Sayfa başına uçuş gösterimini belirleyebilirsiniz.
+  - **Material UI** ile modern ve şık arayüz.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🛠 **Kurulum**
+### **1️⃣ Gerekli Bağımlılıkları Yükleyin**
+Öncelikle projenin bağımlılıklarını yükleyin:
+```bash
+npm install
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2️⃣ Çevre Değişkenlerini (Environment Variables) Ayarlayın
+REACT_APP_API_URL değişkenini .env dosyasına ekleyin:
+REACT_APP_API_URL=http://localhost:8080/api
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3️⃣ Projeyi Çalıştırın
+Projeyi geliştirme modunda başlatın:
+npm start
+Tarayıcıdan http://localhost:3000 adresine giderek uygulamayı görüntüleyebilirsiniz.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+🚀 Kullanım
+1️⃣ Kullanıcı Girişi
+Kullanıcılar Kullanıcı Adı & Şifre ile giriş yapar.
+Başarıyla giriş yaptıktan sonra:
+Adminler → /admin-home sayfasına yönlendirilir.
+Kullanıcılar → /user-home sayfasına yönlendirilir.
+2️⃣ Uçuş Listesi & Filtreleme
+Filtreleme seçenekleri:
+✈️ Kalkış Şehri
+🌍 Varış Şehri
+🗓 Tarih
+Filtreler dinamik olarak çalışır, ayrı bir butona gerek yoktur.
+"Temizle" butonu ile tüm filtreler sıfırlanır.
+3️⃣ Uçuş Ekleme (Admin)
+Adminler /admin-home/add-flight sayfasında yeni uçuş ekleyebilir.
+Uçuş planlaması kuralları otomatik olarak kontrol edilir.
+Aynı şehirde 30 dakika içinde iniş/kalkış çakışması olamaz.
+Kalkış saati geçmişte olamaz.
+Kalkış ve varış havalimanı aynı olamaz.

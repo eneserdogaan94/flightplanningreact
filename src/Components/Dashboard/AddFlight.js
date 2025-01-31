@@ -24,6 +24,7 @@ const AddFlight = () => {
   const [departureTime, setDepartureTime] = useState("");
   const [arrivalTime, setArrivalTime] = useState("");
   const [toast, setToast] = useState({ open: false, severity: "info", message: "" });
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     fetchAirports();
@@ -37,15 +38,28 @@ const AddFlight = () => {
     }, 5000);
   };
 
-  const fetchAirports = async () => {
-    try {
-      const response = await axios.get("/api/airports");
-      setAirports(response.data);
-    } catch (error) {
-      console.error("Error fetching airports:", error);
-      showToast("error", "Havalimanları yüklenirken bir hata oluştu.");
-    }
-  };
+
+const fetchAirports = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_URL}/api/airports`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+
+    setAirports(response.data);
+  } catch (error) {
+    console.error("Havalimanları yüklenirken hata oluştu:", error);
+    
+    const errorMessage =
+      error.response?.data?.message || "Havalimanları yüklenirken bir hata oluştu.";
+    
+    showToast("error", errorMessage);
+  }
+};
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -56,17 +70,41 @@ const AddFlight = () => {
         departureTime,
         arrivalTime,
       };
-  
-      const token = localStorage.getItem("token");
-  
-      await axios.post("/api/flights/saveFlight", flightData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+
+      const saveFlight = async (flightData) => {
+        try {
+          const token = localStorage.getItem("token");
+      
+          const response = await axios.post(
+            `${API_URL}/api/flights/saveFlight`,
+            flightData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            }
+          );
+      
+          showToast("success", "Uçuş başarıyla kaydedildi!");
+          
+          return response.data;
+      
+        } catch (error) {
+          console.error("Uçuş kaydedilirken hata oluştu:", error);
+      
+          const errorMessage =
+            error.response?.data?.message || "Uçuş eklenirken bir hata oluştu.";
+      
+          showToast("error", errorMessage);
+      
+          throw error;
+        }
+      };
+      
   
       showToast("success", "Uçuş başarıyla kaydedildi!");
-  
       setTimeout(() => {
         navigate("/admin-home/flights");
       }, 1500);

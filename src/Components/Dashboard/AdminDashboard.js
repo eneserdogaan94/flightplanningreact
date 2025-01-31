@@ -20,7 +20,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 import AirplaneTicketIcon from "../../Images/aircraft-airplane-airline-logo-or-label-journey-vector-21441986.jpg";
 
-import "../../styles/AdminDashboard.css"; // 📌 **Yeni Eklenen CSS Dosyası**
+import "../../styles/AdminDashboard.css";
 
 const AdminDashboard = () => {
   const { token,logout } = useContext(AuthContext);

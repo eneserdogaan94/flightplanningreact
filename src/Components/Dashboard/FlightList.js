@@ -13,61 +13,78 @@ import {
   Box,
   TablePagination,
 } from "@mui/material";
-import "../../styles/FlightList.css"; // 📌 CSS Dosyasını İçeri Aktardık
+import "../../styles/FlightList.css";
 
 const FlightList = () => {
   const [flights, setFlights] = useState([]);
-  const [page, setPage] = useState(0); // 📌 Aktif sayfa
-  const [rowsPerPage, setRowsPerPage] = useState(10); // 📌 Sayfa başına uçuş sayısı
-  const [totalFlights, setTotalFlights] = useState(0); // 📌 Toplam uçuş sayısı
-
+  const [page, setPage] = useState(0); 
+  const [rowsPerPage, setRowsPerPage] = useState(10); 
+  const [totalFlights, setTotalFlights] = useState(0); 
+  const API_URL = process.env.REACT_APP_API_URL;
+  
   useEffect(() => {
     fetchFlights();
   }, [page, rowsPerPage]);
 
+
   const fetchFlights = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`/api/flights?page=${page}&size=${rowsPerPage}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const currentPage = page ?? 0;
+      const currentRowsPerPage = rowsPerPage ?? 10;
+      
+      const response = await axios.get(
+        `${API_URL}/api/flights?page=${currentPage}&size=${currentRowsPerPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
 
-      setFlights(response.data.content);
-      setTotalFlights(response.data.totalElements);
+      setFlights(response.data.content || []);  
+      setTotalFlights(response.data.totalElements || 0);
+
     } catch (error) {
-      console.error("Error fetching flights:", error);
-    }
-  };
+      console.error("Uçuşlar yüklenirken hata oluştu:", error);
 
-  // 📌 **Uçuş Tarihine Göre Renk Belirleme**
+      const errorMessage =
+        error.response?.data?.message || "Uçuşlar yüklenirken bir hata oluştu.";
+    }
+};
+
+useEffect(() => {
+  fetchFlights();
+}, [page, rowsPerPage]); 
+
+
   const getTextColorClass = (departureTime) => {
     const now = new Date();
     const flightDate = new Date(departureTime);
     const diffInDays = Math.floor((flightDate - now) / (1000 * 60 * 60 * 24));
 
     if (flightDate < now) {
-      return "flight-red"; // 🔴 Geçmiş tarihli uçuşlar için kırmızı
+      return "flight-red"; 
     } else if (diffInDays <= 3) {
-      return "flight-orange"; // 🟠 3 gün içinde olan uçuşlar için turuncu
+      return "flight-orange"; 
     } else {
-      return "flight-blue"; // 🔵 Diğer tüm ileri tarihler için mavi
+      return "flight-blue";
     }
   };
 
-  // 📌 Sayfa değiştirildiğinde çalışacak fonksiyon
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  // 📌 Sayfa başına kaç satır gösterileceğini değiştiren fonksiyon
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 5));
     setPage(0);
   };
 
   return (
     <Box className="flight-list-container">
-      {/* 📌 Bilgilendirme Mesajı */}
       <Box className="flight-info-alert">
         <Alert severity="info">
           <strong>Uçuş Renk Kodları:</strong>
@@ -84,7 +101,7 @@ const FlightList = () => {
       </Typography>
 
       <TableContainer component={Paper}>
-        <Table size="small"> {/* 📌 Dense Table */}
+        <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell>Kalkış Şehri</TableCell>
@@ -129,7 +146,6 @@ const FlightList = () => {
         </Table>
       </TableContainer>
 
-      {/* 📌 Sayfalama Kontrolleri */}
       <TablePagination
         className="flight-pagination"
         rowsPerPageOptions={[5, 10, 25]}
