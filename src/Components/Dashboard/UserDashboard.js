@@ -83,7 +83,6 @@ const UserDashboard = () => {
     }, 5000);
   };
 
-  // 📌 Backend ile Filtreleme API'sini çağıran yeni fonksiyon
   const handleFilterApply = async () => {
     try {
       const response = await axios.post(`${API_URL}/api/flights/filter`, filter, {
@@ -101,16 +100,14 @@ const UserDashboard = () => {
     }
   };
 
-  // 📌 Kullanıcının girdiği filtreleri güncelleyen fonksiyon
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
     setFilter((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 📌 Filtreleri temizleme fonksiyonu
   const handleClearFilters = () => {
     setFilter({ departureCity: "", arrivalCity: "", departureDate: "" });
-    fetchFlights(); // Filtreleri temizleyince tüm uçuşları yeniden getir
+    fetchFlights();
   };
   const handleLogout = () => {
     logout(() => {
