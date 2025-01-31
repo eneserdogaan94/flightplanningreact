@@ -36,3 +36,38 @@
     transform: rotate(360deg);
   }
 }
+.user-dashboard-clear-btn,
+.user-dashboard-filter-btn {
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.user-dashboard-clear-btn {
+  background-color: red;
+  color: white;
+}
+
+.user-dashboard-clear-btn:hover {
+  background-color: darkred;
+}
+
+.user-dashboard-filter-btn {
+  background-color: #1565c0;
+  color: white;
+}
+
+.user-dashboard-filter-btn:hover {
+  background-color: #0d47a1;
+}
+
+/* 📌 **Filtreleme Butonları Yan Yana** */
+.user-dashboard-filters .user-dashboard-clear-btn,
+.user-dashboard-filters .user-dashboard-filter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+}
