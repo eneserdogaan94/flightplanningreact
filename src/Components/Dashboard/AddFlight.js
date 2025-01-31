@@ -61,71 +61,73 @@ const fetchAirports = async () => {
   }
 };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const flightData = {
-        departureAirportId: departureAirport,
-        arrivalAirportId: arrivalAirport,
-        departureTime,
-        arrivalTime,
-      };
-
-      const saveFlight = async (flightData) => {
-        try {
-          const token = localStorage.getItem("token");
-      
-          const response = await axios.post(
-            `${API_URL}/api/flights/saveFlight`,
-            flightData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
-      
-          showToast("success", "Uçuş başarıyla kaydedildi!");
-          
-          return response.data;
-      
-        } catch (error) {
-          console.error("Uçuş kaydedilirken hata oluştu:", error);
-      
-          const errorMessage =
-            error.response?.data?.message || "Uçuş eklenirken bir hata oluştu.";
-      
-          showToast("error", errorMessage);
-      
-          throw error;
-        }
-      };
-      
-  
-      showToast("success", "Uçuş başarıyla kaydedildi!");
-      setTimeout(() => {
-        navigate("/admin-home/flights");
-      }, 1500);
-    } catch (error) {
-      console.error("Error saving flight:", error);
-  
-      let errorMessage = "Uçuş eklenirken bir hata oluştu.";
-  
-      if (error.response && error.response.data) {
-        if (typeof error.response.data === "string") {
-          errorMessage = error.response.data;
-        } else if (error.response.data.message) {
-          errorMessage = error.response.data.message;
-        }
-      } else if (error.message) {
-        errorMessage = error.message;
+const saveFlight = async (flightData) => {
+  try {
+    const token = localStorage.getItem("token");
+    
+    const response = await axios.post(
+      `${API_URL}/api/flights/saveFlight`,
+      flightData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
       }
-  
-      showToast("error", errorMessage);
+    );
+
+    showToast("success", "Uçuş başarıyla kaydedildi!");
+    
+    return response.data;
+
+  } catch (error) {
+    console.error("Uçuş kaydedilirken hata oluştu:", error);
+
+    const errorMessage =
+      error.response?.data?.message || "Uçuş eklenirken bir hata oluştu.";
+
+    showToast("error", errorMessage);
+
+    throw error;
+  }
+};
+
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  try {
+    const flightData = {
+      departureAirportId: departureAirport,
+      arrivalAirportId: arrivalAirport,
+      departureTime,
+      arrivalTime,
+    };
+
+    await saveFlight(flightData); 
+
+    setTimeout(() => {
+      navigate("/admin-home/flights");
+    }, 1500);
+
+  } catch (error) {
+    console.error("Error saving flight:", error);
+
+    let errorMessage = "Uçuş eklenirken bir hata oluştu.";
+
+    if (error.response && error.response.data) {
+      if (typeof error.response.data === "string") {
+        errorMessage = error.response.data;
+      } else if (error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
+    } else if (error.message) {
+      errorMessage = error.message;
     }
-  };
+
+    showToast("error", errorMessage);
+  }
+};
+
   
 
   return (
