@@ -38,11 +38,14 @@ Kullanıcılar ve yöneticiler, uçuşları listeleyebilir, filtreleyebilir ve y
 npm install
 
 2️⃣ Çevre Değişkenlerini (Environment Variables) Ayarlayın
+
 REACT_APP_API_URL değişkenini .env dosyasına ekleyin:
 REACT_APP_API_URL=http://localhost:8080/api
 
 3️⃣ Projeyi Çalıştırın
 Projeyi geliştirme modunda başlatın:
+
+
 npm start
 Tarayıcıdan http://localhost:3000 adresine giderek uygulamayı görüntüleyebilirsiniz.
 
