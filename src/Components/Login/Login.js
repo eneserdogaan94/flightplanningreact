@@ -67,7 +67,6 @@ const Login = () => {
     } else {
       setLoading(false);
       showToast("error", "Giriş başarısız. Lütfen bilgilerinizi kontrol edin.");
-      setGeneralError("Giriş başarısız. Lütfen bilgilerinizi kontrol edin.");
     }
   };
 

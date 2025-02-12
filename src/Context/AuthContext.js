@@ -48,10 +48,10 @@ export const AuthProvider = ({ children }) => {
   
       return { role };
     } catch (error) {
-      console.error("Login hatası:", error);
+      console.log("Login hatası:", error);
   
       if (error.response) {
-        throw new Error(error.response.data.message || "Giriş başarısız!");
+        console.log(error.response.data.message || "Giriş başarısız!");
       } else {
         throw new Error("Sunucuya bağlanılamadı!");
       }
